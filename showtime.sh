@@ -126,7 +126,13 @@ b() {
     HISTFILE="$DEMO_HISTFILE" PS1="\[\033[0;35m\]($DEMO) \$ \[\033[0m\]" bash --rcfile <(
         echo "set +h"
         echo "history -r '$DEMO_HISTFILE'"
-        echo "trap 'history -a \"$DEMO_HISTFILE\"' EXIT"
+        echo "trap 'history -w \"$DEMO_HISTFILE\"' EXIT"
+        echo "# Load bash completion"
+        echo "if [ -f /etc/bash_completion ]; then"
+        echo "    . /etc/bash_completion"
+        echo "elif [ -f /usr/share/bash-completion/bash_completion ]; then"
+        echo "    . /usr/share/bash-completion/bash_completion"
+        echo "fi"
     )
     echo -e "${PURPLE}Exiting bash...${NC}\n"
 }
