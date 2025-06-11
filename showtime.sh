@@ -50,7 +50,16 @@ hh() {
 
 # Function to print step messages
 p() {
-    echo -e "${GREEN}➤${NC} ${YELLOW}$1${NC}\n"
+    local first_line=true
+    echo "$1" | fold -s -w 78 | while IFS= read -r line; do
+        if [ "$first_line" = true ]; then
+            echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
+            first_line=false
+        else
+            echo -e "  ${YELLOW}$line${NC}"
+        fi
+    done
+    echo
 }
 
 # Function to print success messages
