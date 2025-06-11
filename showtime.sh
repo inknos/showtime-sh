@@ -100,7 +100,7 @@ et() {
     timeout "$timeout_duration" bash -c "$1"
     local exit_code=$?
     if [ $exit_code -eq 124 ]; then
-        print_warning "Command timed out after ${timeout_duration} seconds"
+        pw "Command timed out after ${timeout_duration} seconds"
     fi
     return $exit_code
 }
