@@ -12,6 +12,4 @@ curl -O https://codeberg.org/inknos/showtime/raw/branch/main/showtime.sh
 
 Check `examples/demo.sh`
 
-![Demo of examples/demo.sh](demo.gif)
-
-
+[![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
