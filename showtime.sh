@@ -38,22 +38,14 @@ trap 'handle_sigint' SIGINT
 
 # Function to print colored headers
 h() {
-    if [ "$EXPORT" != true ]; then
-        clear
-    fi
+    clear
     hh "$1"
 }
 
 hh() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# ========================================"
-        echo -e "#  $1"
-        echo -e "# ========================================\n"
-    else
-        echo -e "${CYAN}========================================${NC}"
-        echo -e "${WHITE}${BOLD}$1${NC}"
-        echo -e "${CYAN}========================================${NC}\n"
-    fi
+    echo -e "${CYAN}========================================${NC}"
+    echo -e "${WHITE}${BOLD}$1${NC}"
+    echo -e "${CYAN}========================================${NC}\n"
 }
 
 # Function to print step messages
@@ -61,77 +53,43 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [ "$first_line" = true ]; then
-            if [ "$EXPORT" = true ]; then
-                echo -e "# $line"
-            else
-                echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
-            fi
+            echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
             first_line=false
         else
-            if [ "$EXPORT" = true ]; then
-                echo -e "# $line"
-            else
-                echo -e "  ${YELLOW}$line${NC}"
-            fi
+            echo -e "  ${YELLOW}$line${NC}"
         fi
     done
-    if [ "$EXPORT" != true ]; then
-        echo
-    fi
+    echo
 }
 
 # Function to print success messages
 ps() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# $1"
-    else
-        echo -e "\n${GREEN}✓${NC} ${WHITE}${BOLD}$1${NC}\n"
-    fi
+    echo -e "\n${GREEN}✓${NC} ${WHITE}${BOLD}$1${NC}\n"
 }
 
 # Function to print error messages
 pe() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# $1"
-    else
-        echo -e "\n${RED}✗${NC} ${WHITE}${BOLD}Error: $1${NC}\n"
-    fi
+    echo -e "\n${RED}✗${NC} ${WHITE}${BOLD}Error: $1${NC}\n"
 }
 
 # Function to print warning messages
 pw() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# $1"
-    else
-        echo -e "\n${YELLOW}⚠${NC} ${WHITE}${BOLD}Warning: $1${NC}\n"
-    fi
+    echo -e "\n${YELLOW}⚠${NC} ${WHITE}${BOLD}Warning: $1${NC}\n"
 }
 
 # Function to print info messages
 pi() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# $1"
-    else
-        echo -e "${BLUE}ℹ${NC} ${WHITE}$1${NC}"
-    fi
+    echo -e "${BLUE}ℹ${NC} ${WHITE}$1${NC}"
 }
 
 # Function to print section separators
 p-() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "# ----------------------------------------"
-    else
-        echo -e "${DIM}${CYAN}----------------------------------------${NC}"
-    fi
+    echo -e "${DIM}${CYAN}----------------------------------------${NC}"
 }
 
 # Function to print command in red and execute it
 # put a newline at the end
 e() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "$1"
-        return
-    fi
     echo -e "${RED}$ ${WHITE}$1${NC}"
 
     # Append command to global history file
@@ -146,10 +104,6 @@ e() {
 
 # Function to print command in red and execute it with timeout
 et() {
-    if [ "$EXPORT" = true ]; then
-        echo -e "$1"
-        return
-    fi
     local timeout_duration="${2:-30}"  # Default 30 seconds
     echo -e "${RED}$ ${WHITE}$1${NC}"
     timeout "$timeout_duration" bash -c "$1"
@@ -162,9 +116,6 @@ et() {
 
 # Function to pause demo execution based on GOON variable
 w() {
-    if [ "$EXPORT" = true ]; then
-        return
-    fi
     if [ "${GOON:-false}" = "true" ]; then
         # If GOON is true, continue without pausing
         return
@@ -176,9 +127,6 @@ w() {
 }
 
 b() {
-    if [ "$EXPORT" = true ]; then
-        return
-    fi
     if [ -z "$DEMO_NAME" ]; then
         DEMO=demo
     else
@@ -197,3 +145,36 @@ b() {
     )
     echo -e "${PURPLE}Exiting bash...${NC}\n"
 }
+
+# Export mode function overrides
+if [ "$EXPORT" = true ]; then
+    # Export versions of functions - convert output to comments or commands
+    _export_comment() {
+        echo "$1" | fold -s -w 78 | sed 's/^/# /'
+    }
+
+    _export_header() {
+        echo "# ========================================"
+        echo "#  $1"
+        echo "# ========================================"
+        echo
+    }
+
+    _export_noop() {
+        :  # do nothing
+    }
+
+    # Override functions for export mode
+    h() { _export_header "$1"; }
+    hh() { _export_header "$1"; }
+    p() { _export_comment "$1"; }
+    ps() { _export_comment "$1"; }
+    pe() { _export_comment "Error: $1"; }
+    pw() { _export_comment "Warning: $1"; }
+    pi() { _export_comment "$1"; }
+    p-() { echo "# ----------------------------------------"; }
+    e() { echo "$1"; }
+    et() { echo "$1"; }  # ignore timeout parameter in export mode
+    w() { _export_noop; }
+    b() { _export_noop; }
+fi
