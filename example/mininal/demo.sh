@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../showtime.sh
+source ../../showtime.sh
 
 h "This is a great demo!"
 

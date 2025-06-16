@@ -38,14 +38,22 @@ trap 'handle_sigint' SIGINT
 
 # Function to print colored headers
 h() {
-    clear
+    if [ "$EXPORT" != true ]; then
+        clear
+    fi
     hh "$1"
 }
 
 hh() {
-    echo -e "${CYAN}========================================${NC}"
-    echo -e "${WHITE}${BOLD}$1${NC}"
-    echo -e "${CYAN}========================================${NC}\n"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# ========================================"
+        echo -e "#  $1"
+        echo -e "# ========================================\n"
+    else
+        echo -e "${CYAN}========================================${NC}"
+        echo -e "${WHITE}${BOLD}$1${NC}"
+        echo -e "${CYAN}========================================${NC}\n"
+    fi
 }
 
 # Function to print step messages
@@ -53,43 +61,77 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [ "$first_line" = true ]; then
-            echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
+            if [ "$EXPORT" = true ]; then
+                echo -e "# $line"
+            else
+                echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
+            fi
             first_line=false
         else
-            echo -e "  ${YELLOW}$line${NC}"
+            if [ "$EXPORT" = true ]; then
+                echo -e "# $line"
+            else
+                echo -e "  ${YELLOW}$line${NC}"
+            fi
         fi
     done
-    echo
+    if [ "$EXPORT" != true ]; then
+        echo
+    fi
 }
 
 # Function to print success messages
 ps() {
-    echo -e "\n${GREEN}✓${NC} ${WHITE}${BOLD}$1${NC}\n"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# $1"
+    else
+        echo -e "\n${GREEN}✓${NC} ${WHITE}${BOLD}$1${NC}\n"
+    fi
 }
 
 # Function to print error messages
 pe() {
-    echo -e "\n${RED}✗${NC} ${WHITE}${BOLD}Error: $1${NC}\n"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# $1"
+    else
+        echo -e "\n${RED}✗${NC} ${WHITE}${BOLD}Error: $1${NC}\n"
+    fi
 }
 
 # Function to print warning messages
 pw() {
-    echo -e "\n${YELLOW}⚠${NC} ${WHITE}${BOLD}Warning: $1${NC}\n"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# $1"
+    else
+        echo -e "\n${YELLOW}⚠${NC} ${WHITE}${BOLD}Warning: $1${NC}\n"
+    fi
 }
 
 # Function to print info messages
 pi() {
-    echo -e "${BLUE}ℹ${NC} ${WHITE}$1${NC}"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# $1"
+    else
+        echo -e "${BLUE}ℹ${NC} ${WHITE}$1${NC}"
+    fi
 }
 
 # Function to print section separators
 p-() {
-    echo -e "${DIM}${CYAN}----------------------------------------${NC}"
+    if [ "$EXPORT" = true ]; then
+        echo -e "# ----------------------------------------"
+    else
+        echo -e "${DIM}${CYAN}----------------------------------------${NC}"
+    fi
 }
 
 # Function to print command in red and execute it
 # put a newline at the end
 e() {
+    if [ "$EXPORT" = true ]; then
+        echo -e "$1"
+        return
+    fi
     echo -e "${RED}$ ${WHITE}$1${NC}"
 
     # Append command to global history file
@@ -104,6 +146,10 @@ e() {
 
 # Function to print command in red and execute it with timeout
 et() {
+    if [ "$EXPORT" = true ]; then
+        echo -e "$1"
+        return
+    fi
     local timeout_duration="${2:-30}"  # Default 30 seconds
     echo -e "${RED}$ ${WHITE}$1${NC}"
     timeout "$timeout_duration" bash -c "$1"
@@ -116,6 +162,9 @@ et() {
 
 # Function to pause demo execution based on GOON variable
 w() {
+    if [ "$EXPORT" = true ]; then
+        return
+    fi
     if [ "${GOON:-false}" = "true" ]; then
         # If GOON is true, continue without pausing
         return
@@ -127,6 +176,9 @@ w() {
 }
 
 b() {
+    if [ "$EXPORT" = true ]; then
+        return
+    fi
     if [ -z "$DEMO_NAME" ]; then
         DEMO=demo
     else

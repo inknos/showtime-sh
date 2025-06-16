@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -e
+
+OFFLINE=false
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 <demo_name> [--clean|-y]"
+    echo "Examples:"
+    echo "  $0 mydemo            # Run demo mydemo"
+    echo "  $0 mydemo --clean    # Clean demo mydemo"
+    echo "  $0 mydemo -y         # Run demo mydemo without pausing"
+    echo "  $0 mydemo --offline  # Run demo mydemo offline steps"
+    echo "  $0 mydemo --export   # Export demo to stdout"
+    exit 1
+}
+
+# Check if at least one argument is provided
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+DEMO_NAME=$1
+CLEAN_MODE=false
+
+
+
+# Initialize GOON variable
+GOON=false
+
+# Check for --clean or -y flag
+if [ $# -eq 2 ]; then
+    if [ "$2" = "--clean" ]; then
+        CLEAN_MODE=true
+    elif [ "$2" = "-y" ]; then
+        GOON=true
+    elif [ "$2" = "--export" ]; then
+        GOON=true
+        EXPORT=true
+    elif
+        [ "$2" = "--offline" ]; then
+        OFFLINE=true
+    else
+        usage
+    fi
+elif [ $# -gt 2 ]; then
+    usage
+fi
+
+# Validate demo number
+# case $DEMO_NAME in
+#     ansible|autocompletion|auto-update|compose|healthcheck|quadlet|auto-update-rollback)
+#         ;;
+#     *)
+#         echo "Error: Invalid demo name '$DEMO_NAME'"
+#         echo "Valid demos are: ansible, autocompletion, auto-update, auto-update-rollback compose, farm, healthckeck"
+#         exit 1
+#         ;;
+# esac
+
+DEMO_DIR="./$DEMO_NAME"
+
+# Check if demo directory exists
+if [ ! -d "$DEMO_DIR" ]; then
+    echo "Error: Demo directory '$DEMO_DIR' does not exist"
+    exit 1
+fi
+
+if [ "$CLEAN_MODE" = true ]; then
+    # Clean mode
+    CLEAN_SCRIPT="$DEMO_DIR/clean.sh"
+    if [ -f "$CLEAN_SCRIPT" ]; then
+        echo "Running clean script for demo $DEMO_NAME..."
+        cd "$DEMO_DIR" && bash clean.sh
+    else
+        echo "Warning: Clean script '$CLEAN_SCRIPT' not found"
+        exit 1
+    fi
+elif [ "$OFFLINE" = true ]; then
+    OFFLINE_SCRIPT="$DEMO_DIR/offline.sh"
+    if [ -f "$OFFLINE_SCRIPT" ]; then
+        echo "Running offline steps for demo $DEMO_NAME..."
+        cd "$DEMO_DIR" && bash offline.sh
+        exit 1
+    fi
+else
+    # Run mode
+    DEMO_SCRIPT="$DEMO_DIR/demo.sh"
+    if [ -f "$DEMO_SCRIPT" ]; then
+        echo "Running demo $DEMO_NAME..."
+        cd "$DEMO_DIR" && GOON="$GOON" EXPORT="$EXPORT" DEMO_NAME="$DEMO_NAME" bash demo.sh
+    else
+        echo "Warning: Demo script '$DEMO_SCRIPT' not found"
+        exit 1
+    fi
+fi
+
+echo "Done with demo $DEMO_NAME."
