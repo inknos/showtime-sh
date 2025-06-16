@@ -22,23 +22,18 @@ p "Hello world!"
 
 ```bash
 # Run demos with:
-
 ./run examples/minimal
 
 # Skip wait times with -y
-
 ./run examples/minimal -y
 
 # Export your code to a bash file with `--export`
-
 ./run examples/minimal --export
 
 # Define and run clean steps with `--clean`
-
 ./run examples/minimal --export
 
 # Define and run offline setup for your demos with `--offline`
-
 ./run examples/minimal --offline
 ```
 
@@ -46,15 +41,12 @@ p "Hello world!"
 
 ```bash
 # Run a demo with
-
 ./examples/minimal/demo.sh
 
 # Skip wait times with `GOON`
-
 GOON=true ./examples/minimal/demo.sh
 
 # Export your code to stdout with `EXPORT`
-
 EXPORT=true ./examples/minimal/demo.sh
 ```
 
