@@ -2,7 +2,7 @@
 
 Supercharge your bash demo with this simple script.
 
-### Installation
+### Getting showtime.sh
 
 ```bash
 curl -O https://codeberg.org/inknos/showtime/raw/branch/main/showtime.sh
@@ -17,6 +17,20 @@ source ./showtime.sh
 
 p "Hello world!"
 ```
+
+If you want to run it using the ./run wrapper you can use 
+
+```bash
+curl -O https://codeberg.org/inknos/showtime/raw/branch/main/run
+chmod +x run
+./run <directory>
+```
+
+Inside of the directory you need to have at least a `demo.sh` file.
+Inside each demo directory you can make use of other files as well like
+`clean.sh`, `offline.sh` and `theme.sh`. None of these files are
+mandatory.
+
 
 ### Usage of `./run` script
 
