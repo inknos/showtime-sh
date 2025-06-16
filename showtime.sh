@@ -3,7 +3,7 @@
 # Shared color definitions and utility functions for demo scripts
 # Source this file in other scripts with: source "$(dirname "$0")/colors.sh"
 
-# Color definitions
+# Base color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,20 +15,43 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m' # No Color
 
+# Load theme.sh from demo directory if it exists
+if [ -f "$(dirname "$0")/theme.sh" ]; then
+    source "$(dirname "$0")/theme.sh" 2>/dev/null || true
+fi
+
+# Semantic color definitions (configurable)
+C_HEADER=${C_HEADER:-$CYAN}
+C_HEADER_TEXT=${C_HEADER_TEXT:-$WHITE$BOLD}
+C_SUCCESS=${C_SUCCESS:-$GREEN}
+C_ERROR=${C_ERROR:-$RED}
+C_WARNING=${C_WARNING:-$YELLOW}
+C_INFO=${C_INFO:-$BLUE}
+C_COMMAND=${C_COMMAND:-$RED}
+C_COMMAND_TEXT=${C_COMMAND_TEXT:-$WHITE}
+C_TEXT=${C_TEXT:-$YELLOW}
+C_BULLET=${C_BULLET:-$GREEN}
+C_PROMPT=${C_PROMPT:-$DIM$CYAN}
+C_INTERACTIVE=${C_INTERACTIVE:-$PURPLE}
+C_SEPARATOR=${C_SEPARATOR:-$DIM$CYAN}
+
+# Configurable symbols
+S_BULLET=${S_BULLET:-"➤"}
+
 # Global history file for demo commands
 DEMO_HISTFILE=$(mktemp)
 
 # Signal handling for Ctrl+C
 handle_sigint() {
-    echo -e "\n${PURPLE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
+    echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
 
     # Temporarily change trap to exit on second Ctrl+C
-    trap 'echo -e "\n${RED}Double Ctrl+C - exiting demo${NC}"; exit 130' SIGINT
+    trap 'echo -e "\n${C_ERROR}Double Ctrl+C - exiting demo${NC}"; exit 130' SIGINT
 
     # Wait 2 seconds for second Ctrl+C, then enter interactive mode
     sleep 2
     trap 'handle_sigint' SIGINT
-    echo -e "${PURPLE}Entering bash...${NC}\n"
+    echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
     b
     echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
 }
@@ -43,9 +66,9 @@ h() {
 }
 
 hh() {
-    echo -e "${CYAN}========================================${NC}"
-    echo -e "${WHITE}${BOLD}$1${NC}"
-    echo -e "${CYAN}========================================${NC}\n"
+    echo -e "${C_HEADER}========================================${NC}"
+    echo -e "${C_HEADER_TEXT}$1${NC}"
+    echo -e "${C_HEADER}========================================${NC}\n"
 }
 
 # Function to print step messages
@@ -53,10 +76,10 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [ "$first_line" = true ]; then
-            echo -e "${GREEN}➤${NC} ${YELLOW}$line${NC}"
+            echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$line${NC}"
             first_line=false
         else
-            echo -e "  ${YELLOW}$line${NC}"
+            echo -e "  ${C_TEXT}$line${NC}"
         fi
     done
     echo
@@ -64,33 +87,33 @@ p() {
 
 # Function to print success messages
 ps() {
-    echo -e "\n${GREEN}✓${NC} ${WHITE}${BOLD}$1${NC}\n"
+    echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$1${NC}\n"
 }
 
 # Function to print error messages
 pe() {
-    echo -e "\n${RED}✗${NC} ${WHITE}${BOLD}Error: $1${NC}\n"
+    echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $1${NC}\n"
 }
 
 # Function to print warning messages
 pw() {
-    echo -e "\n${YELLOW}⚠${NC} ${WHITE}${BOLD}Warning: $1${NC}\n"
+    echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $1${NC}\n"
 }
 
 # Function to print info messages
 pi() {
-    echo -e "${BLUE}ℹ${NC} ${WHITE}$1${NC}"
+    echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$1${NC}"
 }
 
 # Function to print section separators
 p-() {
-    echo -e "${DIM}${CYAN}----------------------------------------${NC}"
+    echo -e "${C_SEPARATOR}----------------------------------------${NC}"
 }
 
 # Function to print command in red and execute it
 # put a newline at the end
 e() {
-    echo -e "${RED}$ ${WHITE}$1${NC}"
+    echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
 
     # Append command to global history file
     echo "$1" >> "$DEMO_HISTFILE"
@@ -105,7 +128,7 @@ e() {
 # Function to print command in red and execute it with timeout
 et() {
     local timeout_duration="${2:-30}"  # Default 30 seconds
-    echo -e "${RED}$ ${WHITE}$1${NC}"
+    echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
     timeout "$timeout_duration" bash -c "$1"
     local exit_code=$?
     if [ $exit_code -eq 124 ]; then
@@ -121,7 +144,7 @@ w() {
         return
     else
         # If GOON is false or not set, wait for user input
-        echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
+        echo -e "${C_PROMPT}Press Enter to continue...${NC}"
         read -r
     fi
 }
@@ -132,7 +155,7 @@ b() {
     else
         DEMO=$DEMO_NAME
     fi
-    HISTFILE="$DEMO_HISTFILE" PS1="\[\033[0;35m\]($DEMO) \$ \[\033[0m\]" bash --rcfile <(
+    HISTFILE="$DEMO_HISTFILE" PS1="\[${C_INTERACTIVE}\]($DEMO) \$ \[${NC}\]" bash --rcfile <(
         echo "set +h"
         echo "history -r '$DEMO_HISTFILE'"
         echo "trap 'history -w \"$DEMO_HISTFILE\"' EXIT"
@@ -143,7 +166,7 @@ b() {
         echo "    . /usr/share/bash-completion/bash_completion"
         echo "fi"
     )
-    echo -e "${PURPLE}Exiting bash...${NC}\n"
+    echo -e "${C_INTERACTIVE}Exiting bash...${NC}\n"
 }
 
 # Export mode function overrides
