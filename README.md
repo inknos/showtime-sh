@@ -79,6 +79,12 @@ EXPORT=true ./examples/minimal/demo.sh
 
 You can customize colors and symbols by creating a `theme.sh` file in your demo directory. This file will be automatically loaded when your demo runs.
 
+Run the color demo to see it in action
+
+```bash
+./run examples/colors
+```
+
 #### Creating a Custom Theme
 
 Create a `theme.sh` file in the same directory as your demo:
