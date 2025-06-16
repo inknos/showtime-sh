@@ -1,6 +1,6 @@
 # showtime
 
-Helper scripts to make your bash demo incredible
+Supercharge your bash demo with this simple script.
 
 ### Installation
 
@@ -8,7 +8,17 @@ Helper scripts to make your bash demo incredible
 curl -O https://codeberg.org/inknos/showtime/raw/branch/main/showtime.sh
 ```
 
-### Usage
+Then inside your demo
+
+```bash
+#!/bin/bash
+
+source ./showtime.sh
+
+p "Hello world!"
+```
+
+### Examples
 
 Check `examples/demo.sh`
 
