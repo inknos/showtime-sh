@@ -35,7 +35,11 @@ p "Get into a subshell and run commands with b:"
 
 b
 
-p "Exit the subshell and wait again, but break the execution by pressing ^C"
+p "Did you notice the demos are running in a shubshell with the history being
+generated from the commands that are being run during the \`e\` steps?
+
+If you didn't notice jump in again by breaking the execution. Press ^C
+and wait for the shell to spawn"
 
 w
 
