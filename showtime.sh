@@ -129,7 +129,11 @@ e() {
 et() {
     local timeout_duration="${2:-30}"  # Default 30 seconds
     echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
-    timeout "$timeout_duration" bash -c "$1"
+
+    # Append command to global history file
+    echo "$1" >> "$DEMO_HISTFILE"
+
+    HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1"
     local exit_code=$?
     if [ $exit_code -eq 124 ]; then
         pw "Command timed out after ${timeout_duration} seconds"
