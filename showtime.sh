@@ -205,3 +205,16 @@ if [ "$EXPORT" = true ]; then
     w() { _export_noop; }
     b() { _export_noop; }
 fi
+
+if [ "$DRYRUN" = true ]; then
+    _dry_run() {
+        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
+    }
+
+    # override exec functions
+    pe() { _dry_run() "$1" }
+    e() { _dry_run() "$1" }
+    et() { _dry_run() "$1" }
+    w() { : }
+    b() { : }
+fi
