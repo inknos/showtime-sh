@@ -41,9 +41,100 @@ S_BULLET=${S_BULLET:-"➤"}
 # Global history file for demo commands
 DEMO_HISTFILE=$(mktemp)
 
+_print_sigint_ctrl_c() {
+    if [ -z "$QUIET" ]; then
+        echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
+    fi
+}
+
+_print_entering_bash() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
+    fi
+}
+
+_print_exiting_bash() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
+    fi
+}
+
+_print_press_enter_to_continue() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
+    fi
+}
+
+_print_header() {
+    echo -e "${C_HEADER}========================================${NC}"
+    echo -e "${C_HEADER_TEXT}$1${NC}"
+    echo -e "${C_HEADER}========================================${NC}\n"
+}
+
+_print_first_line() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$1${NC}"
+    fi
+}
+
+
+_print_line() {
+    if [ -z "$QUIET" ]; then
+        echo -e "  ${C_TEXT}$1${NC}"
+    fi
+}
+
+_print_newline() {
+    if [ -z "$QUIET" ]; then
+        echo
+    fi
+}
+
+_clear() {
+    if [ -z "$QUIET" ]; then
+        clear
+    fi
+}
+
+_print_success() {
+    if [ -z "$QUIET" ]; then
+        echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$1${NC}\n"
+    fi
+}
+
+_print_error() {
+    if [ -z "$QUIET" ]; then
+        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $1${NC}\n"
+    fi
+}
+
+_print_warning() {
+    if [ -z "$QUIET" ]; then
+        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $1${NC}\n"
+    fi
+}
+
+_print_info() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$1${NC}"
+    fi
+}
+
+_print_separator() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_SEPARATOR}----------------------------------------${NC}"
+    fi
+}
+
+_print_command() {
+    if [ -z "$QUIET" ]; then
+        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
+    fi
+}
+
 # Signal handling for Ctrl+C
 handle_sigint() {
-    echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
+    _print_sigint_ctrl_c
 
     # Temporarily change trap to exit on second Ctrl+C
     trap 'echo -e "\n${C_ERROR}Double Ctrl+C - exiting demo${NC}"; exit 130' SIGINT
@@ -51,9 +142,9 @@ handle_sigint() {
     # Wait 2 seconds for second Ctrl+C, then enter interactive mode
     sleep 2
     trap 'handle_sigint' SIGINT
-    echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
+    _print_entering_bash
     b
-    echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
+    _print_press_enter_to_continue
 }
 
 # Set up the trap
@@ -61,14 +152,14 @@ trap 'handle_sigint' SIGINT
 
 # Function to print colored headers
 h() {
-    clear
+    _clear
     hh "$1"
 }
 
 hh() {
-    echo -e "${C_HEADER}========================================${NC}"
-    echo -e "${C_HEADER_TEXT}$1${NC}"
-    echo -e "${C_HEADER}========================================${NC}\n"
+    if [ -z "$QUIET" ]; then
+        _print_header "$1"
+    fi
 }
 
 # Function to print step messages
@@ -76,44 +167,44 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [ "$first_line" = true ]; then
-            echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$line${NC}"
+            _print_first_line $line
             first_line=false
         else
-            echo -e "  ${C_TEXT}$line${NC}"
+            _print_line $line
         fi
     done
-    echo
+    _print_newline
 }
 
 # Function to print success messages
 ps() {
-    echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$1${NC}\n"
+    _print_success $1
 }
 
 # Function to print error messages
 pe() {
-    echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $1${NC}\n"
+    _print_error $1
 }
 
 # Function to print warning messages
 pw() {
-    echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $1${NC}\n"
+    _print_warning $1
 }
 
 # Function to print info messages
 pi() {
-    echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$1${NC}"
+    _print_info $1
 }
 
 # Function to print section separators
 p-() {
-    echo -e "${C_SEPARATOR}----------------------------------------${NC}"
+    _print_separator $1
 }
 
 # Function to print command in red and execute it
 # put a newline at the end
 e() {
-    echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
+    _print_command $1
 
     # Append command to global history file
     echo "$1" >> "$DEMO_HISTFILE"
@@ -121,14 +212,14 @@ e() {
     # Execute with HISTFILE set
     HISTFILE="$DEMO_HISTFILE" bash -c "$1"
     local exit_code=$?
-    echo
+    _print_newline
     return $exit_code
 }
 
 # Function to print command in red and execute it with timeout
 et() {
     local timeout_duration="${2:-30}"  # Default 30 seconds
-    echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
+    _print_command $1
 
     # Append command to global history file
     echo "$1" >> "$DEMO_HISTFILE"
@@ -148,7 +239,7 @@ w() {
         return
     else
         # If GOON is false or not set, wait for user input
-        echo -e "${C_PROMPT}Press Enter to continue...${NC}"
+        _print_press_enter_to_continue
         read -r
     fi
 }
@@ -170,7 +261,7 @@ b() {
         echo "    . /usr/share/bash-completion/bash_completion"
         echo "fi"
     )
-    echo -e "${C_INTERACTIVE}Exiting bash...${NC}\n"
+    _print_exiting_bash
 }
 
 # Export mode function overrides
