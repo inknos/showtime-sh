@@ -2,7 +2,9 @@
 
 Supercharge your bash demo with this simple script.
 
-### Getting showtime.sh
+[![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
+
+## Getting showtime.sh
 
 ```bash
 curl -O https://codeberg.org/inknos/showtime/raw/branch/main/showtime.sh
@@ -32,7 +34,7 @@ Inside each demo directory you can make use of other files as well like
 mandatory.
 
 
-### Usage of `./run` script
+## Usage with `./run` script
 
 ```bash
 # Run demos with:
@@ -51,7 +53,7 @@ mandatory.
 ./run examples/minimal --offline
 ```
 
-### Usage with env variables
+## Usage with env variables
 
 ```bash
 # Run a demo with
@@ -70,9 +72,9 @@ QUIET=true ./examples/minimal/demo.sh
 DRYRUN=true ./examples/minimal/demo.sh
 ```
 
-### Functions
+## Functions
 
-##### `h`
+### `h`
 
 *Header*
 
@@ -80,7 +82,7 @@ Prints a header and clears the terminal before printing.
 
 `QUIET=true` skips it
 
-##### `hh`
+### `hh`
 
 *Header 2*
 
@@ -88,7 +90,7 @@ Prints a sub heade and does not clean before printing.
 
 `QUIET=true` skips it
 
-##### `p`
+### `p`
 
 *Print*
 
@@ -96,7 +98,7 @@ Prints a message. Wraps lines longer than 78 characters.
 
 `QUIET=true` skips it
 
-##### `pi`
+### `pi`
 
 *Print Info*
 
@@ -104,7 +106,7 @@ Prints a `INF:` like message
 
 `QUIET=true` skips it
 
-##### `pw`
+### `pw`
 
 *Print Warning*
 
@@ -112,7 +114,7 @@ Prints a `WRN:` like message
 
 `QUIET=true` skips it
 
-##### `pe`
+### `pe`
 
 *Print Error*
 
@@ -120,7 +122,7 @@ Prints an `ERR` like message
 
 `QUIET=true` skips it
 
-##### `d`
+### `d`
 
 *Debug*
 
@@ -128,7 +130,7 @@ Prints a debug line that cannot be quieted.
 
 `QUIET=true` does not affect
 
-##### `e`
+### `e`
 
 *Exec*
 
@@ -137,13 +139,13 @@ Exec a piece of code.
 `DRYRUN=true` Registers the command in the history but does not run it
 `QUIET=true` Quiets the output
 
-##### `et <timeout>`
+### `et <timeout>`
 
 *Exec Timeout*
 
 Same as `e` but with timeout in seconds.
 
-##### `ed`
+### `ed`
 
 *Exec Debug*
 
@@ -151,7 +153,7 @@ Same as `e` but prints like `d` and always execs the code, even when `DRYRUN=tru
 
 `QUIET=true` does not affect
 
-##### `w`
+### `w`
 
 *Wait*
 
@@ -161,7 +163,7 @@ Waits for enter and prints `Press Enter to continue...`.
 `DRYRUN=true` does not affect
 `QUIET=true` skips it
 
-##### `b`
+### `b`
 
 *Bash*
 
@@ -172,7 +174,7 @@ Brings up an interactive shell. The history of the shell is the sequence of the 
 `QUIET=true` skips it
 
 
-### Themes
+## Themes
 
 You can customize colors and symbols by creating a `theme.sh` file in your demo directory. This file will be automatically loaded when your demo runs.
 
@@ -182,7 +184,7 @@ Run the color demo to see it in action
 ./run examples/colors
 ```
 
-#### Creating a Custom Theme
+### Creating a Custom Theme
 
 Create a `theme.sh` file in the same directory as your demo:
 
@@ -220,7 +222,7 @@ export C_SEPARATOR="$DIM$BLUE"            # Separator line color
 export S_BULLET="▶"                        # Bullet symbol (default: ➤)
 ```
 
-#### Available Color Variables
+### Available Color Variables
 
 - `C_HEADER` - Header border lines
 - `C_HEADER_TEXT` - Header text
@@ -236,18 +238,15 @@ export S_BULLET="▶"                        # Bullet symbol (default: ➤)
 - `C_PROMPT` - "Press Enter to continue" text
 - `C_SEPARATOR` - Separator lines
 
-#### Available Symbol Variables
+### Available Symbol Variables
 
 - `S_BULLET` - Bullet symbol for paragraphs (default: ➤)
 
 The theme system uses fallback values, so you only need to define the colors you want to change.
 
-[![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
-
-
 ---
 
-### TODOs, ideas and issues
+## TODOs, ideas and issues
 
 - make skip header configurable
 - add h1 to h6
