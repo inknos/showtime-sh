@@ -11,9 +11,12 @@ BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 WHITE='\033[1;37m'
+GREY='\033[0;90m'
 BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m' # No Color
+ITALIC='\033[3m'
+BOLD='\033[1m'
 
 # Load theme.sh from demo directory if it exists
 if [ -f "$(dirname "$0")/theme.sh" ]; then
@@ -27,8 +30,10 @@ C_SUCCESS=${C_SUCCESS:-$GREEN}
 C_ERROR=${C_ERROR:-$RED}
 C_WARNING=${C_WARNING:-$YELLOW}
 C_INFO=${C_INFO:-$BLUE}
+C_DEBUG=${C_DEBUG:-$PURPLE}
 C_COMMAND=${C_COMMAND:-$RED}
 C_COMMAND_TEXT=${C_COMMAND_TEXT:-$WHITE}
+C_DEBUG_TEXT=${C_DEBUG_TEXT:-$GREY$ITALIC}
 C_TEXT=${C_TEXT:-$YELLOW}
 C_BULLET=${C_BULLET:-$GREEN}
 C_PROMPT=${C_PROMPT:-$DIM$CYAN}
@@ -38,97 +43,124 @@ C_SEPARATOR=${C_SEPARATOR:-$DIM$CYAN}
 # Configurable symbols
 S_BULLET=${S_BULLET:-"➤"}
 
+debug_info() {
+    echo "QUIET: $QUIET"
+    echo "DRYRUN: $DRYRUN"
+    echo "EXPORT: $EXPORT"
+    echo "DEBUG: $DEBUG"
+}
+
+# EXPORT can't be set with QUIET and DRYRUN
+# exit if set together
+if [ "$EXPORT" = "true" ] && [ "$QUIET" = "true" ] && [ "$DRYRUN" = "true" ]; then
+    echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
+    debug_info
+    exit 1
+fi
+
 # Global history file for demo commands
 DEMO_HISTFILE=$(mktemp)
 
 _print_sigint_ctrl_c() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
     fi
 }
 
 _print_entering_bash() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
     fi
 }
 
 _print_exiting_bash() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
     fi
 }
 
 _print_press_enter_to_continue() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
     fi
 }
 
 _print_header() {
     echo -e "${C_HEADER}========================================${NC}"
-    echo -e "${C_HEADER_TEXT}$1${NC}"
+    echo -e "${C_HEADER_TEXT}$@${NC}"
     echo -e "${C_HEADER}========================================${NC}\n"
 }
 
 _print_first_line() {
-    if [ -z "$QUIET" ]; then
-        echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$1${NC}"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$@${NC}"
     fi
 }
 
 
 _print_line() {
-    if [ -z "$QUIET" ]; then
-        echo -e "  ${C_TEXT}$1${NC}"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "  ${C_TEXT}$@${NC}"
     fi
 }
 
 _print_newline() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo
     fi
 }
 
 _clear() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         clear
     fi
 }
 
 _print_success() {
-    if [ -z "$QUIET" ]; then
-        echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$1${NC}\n"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$@${NC}\n"
     fi
 }
 
 _print_error() {
-    if [ -z "$QUIET" ]; then
-        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $1${NC}\n"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $@${NC}\n"
     fi
 }
 
 _print_warning() {
-    if [ -z "$QUIET" ]; then
-        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $1${NC}\n"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $@${NC}\n"
     fi
 }
 
 _print_info() {
-    if [ -z "$QUIET" ]; then
-        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$1${NC}"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$@${NC}"
     fi
 }
 
 _print_separator() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         echo -e "${C_SEPARATOR}----------------------------------------${NC}"
     fi
 }
 
+_print_debug_short_separator() {
+    if [ "$DEBUG" = "true" ]; then
+        echo -e "${C_DEBUG}---${NC}"
+    fi
+}
+
 _print_command() {
-    if [ -z "$QUIET" ]; then
-        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
+    if [ "$QUIET" != "true" ]; then
+        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$@${NC}"
+    fi
+}
+
+_print_debug() {
+    if [ "$DEBUG" = "true" ]; then
+        echo -e "${C_DEBUG}$ ${C_DEBUG_TEXT}$@${NC}"
     fi
 }
 
@@ -157,9 +189,14 @@ h() {
 }
 
 hh() {
-    if [ -z "$QUIET" ]; then
+    if [ "$QUIET" != "true" ]; then
         _print_header "$1"
     fi
+}
+
+# print a debug message
+d() { 
+    _print_debug "$1"
 }
 
 # Function to print step messages
@@ -232,6 +269,17 @@ et() {
     return $exit_code
 }
 
+ed() {
+    _print_debug_short_separator
+    _print_debug "$1"
+    _print_debug_short_separator
+    echo "$1" >> "$DEMO_HISTFILE"
+
+    HISTFILE="$DEMO_HISTFILE" bash -c "$1"
+    local exit_code=$?
+    _print_newline
+    return $exit_code
+}
 # Function to pause demo execution based on GOON variable
 w() {
     if [ "${GOON:-false}" = "true" ]; then
@@ -299,8 +347,7 @@ fi
 
 if [ "$DRYRUN" = true ]; then
     _dry_run() {
-        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$1${NC}"
-        echo
+        _print_command "$1"
     }
 
     # override exec functions
