@@ -11,8 +11,10 @@ usage() {
     echo "  $0 mydemo            # Run demo mydemo"
     echo "  $0 mydemo --clean    # Clean demo mydemo"
     echo "  $0 mydemo -y         # Run demo mydemo without pausing"
-    echo "  $0 mydemo --offline  # Run demo mydemo offline steps"
+    echo "  $0 mydemo --dryrun   # Run everything without executing"
     echo "  $0 mydemo --export   # Export demo to stdout"
+    echo "  $0 mydemo --offline  # Run demo mydemo offline steps (if defined)"
+    echo "  $0 mydemo --quiet    # Run without printing anything"
     exit 1
 }
 
@@ -23,8 +25,6 @@ fi
 
 DEMO_NAME=$1
 CLEAN_MODE=false
-
-
 
 # Initialize GOON variable
 GOON=false
@@ -41,6 +41,12 @@ if [ $# -eq 2 ]; then
     elif
         [ "$2" = "--offline" ]; then
         OFFLINE=true
+    elif
+        [ "$2" = "--quiet" ]; then
+        QUIET=true
+    elif
+        [ "$2" = "--dfryrun" ]; then
+        DRYRUN=true
     else
         usage
     fi

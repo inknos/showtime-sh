@@ -62,7 +62,115 @@ GOON=true ./examples/minimal/demo.sh
 
 # Export your code to stdout with `EXPORT`
 EXPORT=true ./examples/minimal/demo.sh
+
+# Rrun without printing with `QUIET`
+QUIET=true ./examples/minimal/demo.sh
+
+# Dry Run the demo with `DRYRUN`
+DRYRUN=true ./examples/minimal/demo.sh
 ```
+
+### Functions
+
+##### `h`
+
+*Header*
+
+Prints a header and clears the terminal before printing.
+
+`QUIET=true` skips it
+
+##### `hh`
+
+*Header 2*
+
+Prints a sub heade and does not clean before printing.
+
+`QUIET=true` skips it
+
+##### `p`
+
+*Print*
+
+Prints a message. Wraps lines longer than 78 characters.
+
+`QUIET=true` skips it
+
+##### `pi`
+
+*Print Info*
+
+Prints a `INF:` like message
+
+`QUIET=true` skips it
+
+##### `pw`
+
+*Print Warning*
+
+Prints a `WRN:` like message
+
+`QUIET=true` skips it
+
+##### `pe`
+
+*Print Error*
+
+Prints an `ERR` like message
+
+`QUIET=true` skips it
+
+##### `d`
+
+*Debug*
+
+Prints a debug line that cannot be quieted.
+
+`QUIET=true` does not affect
+
+##### `e`
+
+*Exec*
+
+Exec a piece of code.
+
+`DRYRUN=true` Registers the command in the history but does not run it
+`QUIET=true` Quiets the output
+
+##### `et <timeout>`
+
+*Exec Timeout*
+
+Same as `e` but with timeout in seconds.
+
+##### `ed`
+
+*Exec Debug*
+
+Same as `e` but prints like `d` and always execs the code, even when `DRYRUN=true`
+
+`QUIET=true` does not affect
+
+##### `w`
+
+*Wait*
+
+Waits for enter and prints `Press Enter to continue...`.
+
+`GOON=true` skips it
+`DRYRUN=true` does not affect
+`QUIET=true` skips it
+
+##### `b`
+
+*Bash*
+
+Brings up an interactive shell. The history of the shell is the sequence of the commands entered in the demo since this point.
+
+`GOON=true` skips it
+`DRYRUN=true` does not affect
+`QUIET=true` skips it
+
 
 ### Themes
 
@@ -135,3 +243,17 @@ export S_BULLET="▶"                        # Bullet symbol (default: ➤)
 The theme system uses fallback values, so you only need to define the colors you want to change.
 
 [![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
+
+
+---
+
+### TODOs, ideas and issues
+
+- make skip header configurable
+- add h1 to h6
+- make messages configurable by user
+- fix history duplicating in bash
+- make ^C timeout configurable
+- make ^C trap optionally on or off
+- ensure the logic of DRYRUN, QUIET, EXPORT is correct
+- tests would be nice

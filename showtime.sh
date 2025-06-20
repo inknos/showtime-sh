@@ -124,19 +124,19 @@ _print_success() {
 
 _print_error() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}Error: $@${NC}\n"
+        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}ERR: $@${NC}\n"
     fi
 }
 
 _print_warning() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}Warning: $@${NC}\n"
+        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}WRN: $@${NC}\n"
     fi
 }
 
 _print_info() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}$@${NC}"
+        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}INF: $@${NC}"
     fi
 }
 
@@ -335,9 +335,9 @@ if [ "$EXPORT" = true ]; then
     hh() { _export_header "$1"; }
     p() { _export_comment "$1"; }
     ps() { _export_comment "$1"; }
-    pe() { _export_comment "Error: $1"; }
-    pw() { _export_comment "Warning: $1"; }
-    pi() { _export_comment "$1"; }
+    pe() { _export_comment "ERR: $1"; }
+    pw() { _export_comment "WRN: $1"; }
+    pi() { _export_comment "INF: $1"; }
     p-() { echo "# ----------------------------------------"; }
     e() { echo "$1"; }
     et() { echo "$1"; }  # ignore timeout parameter in export mode
