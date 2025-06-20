@@ -54,13 +54,17 @@ debug_info() {
     echo "DEBUG: $DEBUG"
 }
 
-# EXPORT can't be set with QUIET and DRYRUN
-# exit if set together
-if [ "$EXPORT" = "true" ] && [ "$QUIET" = "true" ] && [ "$DRYRUN" = "true" ]; then
-    echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
-    debug_info
-    exit 1
-fi
+_check_env() {
+    # EXPORT can't be set with QUIET and DRYRUN
+    # exit if set together
+    if [ "$EXPORT" = "true" ] && [ "$QUIET" = "true" ] && [ "$DRYRUN" = "true" ]; then
+        echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
+        debug_info
+        exit 1
+    fi
+}
+
+_check_env
 
 # Global history file for demo commands
 DEMO_HISTFILE=$(mktemp)
