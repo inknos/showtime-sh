@@ -42,6 +42,10 @@ C_SEPARATOR=${C_SEPARATOR:-$DIM$CYAN}
 
 # Configurable symbols
 S_BULLET=${S_BULLET:-"➤"}
+S_SUCCESS=${S_SUCCESS:-"✓"}
+S_INFO=${S_INFO:-"ℹ"}
+S_WARNING=${S_WARNING:-"⚠"}
+S_ERROR=${S_ERROR:-"✗"}
 
 debug_info() {
     echo "QUIET: $QUIET"
@@ -118,25 +122,25 @@ _clear() {
 
 _print_success() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "\n${C_SUCCESS}✓${NC} ${C_HEADER_TEXT}$@${NC}\n"
+        echo -e "\n${C_SUCCESS}${S_SUCCESS}${NC} ${C_HEADER_TEXT}$@${NC}\n"
     fi
 }
 
 _print_error() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "\n${C_ERROR}✗${NC} ${C_HEADER_TEXT}ERR: $@${NC}\n"
+        echo -e "\n${C_ERROR}${S_ERROR}${NC} ${C_HEADER_TEXT}ERR: $@${NC}\n"
     fi
 }
 
 _print_warning() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "\n${C_WARNING}⚠${NC} ${C_HEADER_TEXT}WRN: $@${NC}\n"
+        echo -e "\n${C_WARNING}${S_WARNING}${NC} ${C_HEADER_TEXT}WRN: $@${NC}\n"
     fi
 }
 
 _print_info() {
     if [ "$QUIET" != "true" ]; then
-        echo -e "${C_INFO}ℹ${NC} ${C_COMMAND_TEXT}INF: $@${NC}"
+        echo -e "${C_INFO}${S_INFO}${NC} ${C_COMMAND_TEXT}INF: $@${NC}"
     fi
 }
 
