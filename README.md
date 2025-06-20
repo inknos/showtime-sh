@@ -244,6 +244,15 @@ export S_BULLET="▶"                        # Bullet symbol (default: ➤)
 
 The theme system uses fallback values, so you only need to define the colors you want to change.
 
+## Tests
+
+Run all tests with [`bats`](https://github.com/bats-core/bats-core)
+
+```bash
+bats --tap tests/*
+```
+
+
 ---
 
 ## TODOs, ideas and issues
@@ -255,4 +264,3 @@ The theme system uses fallback values, so you only need to define the colors you
 - make ^C timeout configurable
 - make ^C trap optionally on or off
 - ensure the logic of DRYRUN, QUIET, EXPORT is correct
-- tests would be nice
