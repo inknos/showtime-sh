@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ $(basename $(pwd)) = "minimal" ]; then
-    source ../../showtime.sh
-else
-    source ./showtime.sh
-fi
-
 h "This is a great demo!"
 
 p "Print headers with h.

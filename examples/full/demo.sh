@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ../../showtime.sh
-
 h "Full example"
 
 p "Create a temp directory that will be used for the demo"
