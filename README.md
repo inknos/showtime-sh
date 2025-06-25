@@ -4,10 +4,10 @@ Supercharge your bash demo with this simple script.
 
 [![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
 
-## Getting showtime.sh
+## Getting showtime
 
 ```bash
-curl -O https://codeberg.org/inknos/showtime/raw/branch/main/showtime.sh
+curl -O https://codeberg.org/inknos/showtime/raw/branch/main/show
 ```
 
 Then inside your demo
@@ -15,17 +15,17 @@ Then inside your demo
 ```bash
 #!/bin/bash
 
-source ./showtime.sh
+source ./show
 
 p "Hello world!"
 ```
 
-If you want to run it using the ./run wrapper you can use 
+If run it directly by:
 
 ```bash
-curl -O https://codeberg.org/inknos/showtime/raw/branch/main/run
+curl -O https://codeberg.org/inknos/showtime/raw/branch/main/show
 chmod +x run
-./run <directory>
+./show examples/minimal
 ```
 
 Inside of the directory you need to have at least a `demo.sh` file.
@@ -33,7 +33,31 @@ Inside each demo directory you can make use of other files as well like
 `clean.sh`, `offline.sh` and `theme.sh`. None of these files are
 mandatory.
 
-## Usage with env variables
+```bash
+# $ tree examples/
+# examples/
+# ├── colors
+# │   ├── demo.sh
+# │   └── theme.sh
+# ├── full
+# │   ├── clean.sh
+# │   ├── demo.sh
+# │   └── offline.sh
+# └── minimal
+#     └── demo.sh
+```
+
+## Run in a container
+
+```bash
+# clone the repo and cd into it
+podman build -t showtime .
+podman run --rm -it showtime examples/minimal
+```
+
+Builds will come
+
+## Direct usage
 
 ```bash
 # Run a demo with
@@ -64,23 +88,29 @@ DEBUG=true ./example/minimal/demo.sh
 DEBUG=true QUIET=true ./example/minimal/demo.sh
 ```
 
-## Usage with `./run` script (it's a bit buggy)
+## Usage with `./show` script (it's a bit buggy)
 
 ```bash
 # Run demos with:
-./run examples/minimal
+./show examples/minimal
 
 # Skip wait times with -y
-./run examples/minimal -y
+./show examples/minimal -y
 
-# Export your code to a bash file with `--export`
-./run examples/minimal --export
+# Perform a dryrun
+./show examples/minimal --dryrun
 
 # Define and run clean steps with `--clean`
-./run examples/minimal --export
+./show examples/minimal --clean
 
 # Define and run offline setup for your demos with `--offline`
-./run examples/minimal --offline
+./show examples/minimal --offline
+
+# Export your code to a bash file with `--export`
+./show examples/minimal --export
+
+# Export to different formats [sh/md]
+./show example/minimal --export sh
 ```
 
 ## Functions
