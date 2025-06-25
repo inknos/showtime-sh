@@ -1,11 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-    if [ $(basename $(pwd)) = "_" ]; then
-        source ../../showtime.sh
-    else
-        source showtime.sh
-    fi
+    load ../import_showtime.bash
 }
 
 @test "_print_press_enter_to_continue" {

@@ -4,11 +4,7 @@
 # ensure that conflicts are detected.
 
 setup() {
-    if [ $(basename $(pwd)) = "_" ]; then
-        source ../../showtime.sh
-    else
-        source showtime.sh
-    fi
+    load ../import_showtime.bash
     unset QUIET
     unset DRYRUN
     unset EXPORT
