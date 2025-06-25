@@ -42,8 +42,14 @@ mandatory.
 # Skip wait times with `GOON`
 GOON=true ./examples/minimal/demo.sh
 
-# Export your code to stdout with `EXPORT`
+# Export your code to stdout with `EXPORT` (defaults to sh)
 EXPORT=true ./examples/minimal/demo.sh
+
+# Export to sh
+EXPORT_FORMAT=sh ./examples/mimimal/demo.sh
+
+# Export to md
+EXPORT_FORMAT=md ./examples/mimimal/demo.sh
 
 # Rrun without printing with `QUIET`
 QUIET=true ./examples/minimal/demo.sh
