@@ -1,11 +1,51 @@
 #!/usr/bin/env bats
 
-source ../../showtime.sh
+setup() {
+    if [ $(basename $(pwd)) = "_" ]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
+}
+
+@test "S_BULLET is set" {
+    [ -n "$S_BULLET" ]
+}
 
 @test "_print_first_line" {
     run _print_first_line 'test message'
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" == *"test message"* ]]
+    [[ "${lines[0]}" = *"${S_BULLET}"*"test message"* ]]
+}
+
+@test "_print_first_line with custom symbol" {
+    S_BULLET=">" run _print_first_line 'test message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *">"*"test message"* ]]
+}
+
+@test "DRYRUN=true _print_first_line" {
+    DRYRUN=true run _print_first_line 'test message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_BULLET}"*"test message"* ]]
+}
+
+@test "DRYRUN=true _print_first_line with custom symbol" {
+    DRYRUN=true S_BULLET=">" run _print_first_line 'test message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *">"*"test message"* ]]
+}
+
+@test "EXPORT=true _print_first_line" {
+    EXPORT=true run _print_first_line 'test message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "# test message"* ]]
+}
+
+@test "EXPORT=true _print_first_line with custom symbol does not change the symbol" {
+    EXPORT=true S_BULLET=">" run _print_first_line 'test message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "# test message"* ]]
 }
 
 @test "QUIET=true _print_first_line" {

@@ -1,19 +1,33 @@
 #!/usr/bin/env bats
 
-source showtime.sh
-
+setup() {
+    if [ $(basename $(pwd)) = "f"]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
+}
 
 @test "pw \"test\"" {
-    result="$(pw 'test')"
-    [[ "$result" = *"${S_WARNING}"*"WRN: test"* ]]
+    run pw 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_WARNING}"*"WRN: test"* ]]
 }
 
 @test "DRYRUN=true pw \"test\"" {
-    result="$(DRYRUN=true pw 'test')"
-    [[ "$result" = *"${S_WARNING}"*"WRN: test"* ]]
+    DRYRUN=true run pw 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_WARNING}"*"WRN: test"* ]]
+}
+
+@test "EXPORT=true pw \"test\"" {
+    EXPORT=true run pw 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "# WRN: test" ]]
 }
 
 @test "QUIET=true pw \"test\"" {
-    result="$(QUIET=true pw 'test')"
-    [[ "$result" = "" ]]
+    QUIET=true run pw 'test'
+    [ "$status" -eq 0 ]
+    [[ "${#lines[@]}" -eq 0 ]]
 }

@@ -46,15 +46,29 @@ S_SUCCESS=${S_SUCCESS:-"✓"}
 S_INFO=${S_INFO:-"ℹ"}
 S_WARNING=${S_WARNING:-"⚠"}
 S_ERROR=${S_ERROR:-"✗"}
+S_DEBUG=${S_DEBUG:-"$"}
+S_COMMAND=${S_COMMAND:-"$"}
 
 debug_info() {
-    echo "QUIET: $QUIET"
+    echo "DEBUG: $DEBUG"
     echo "DRYRUN: $DRYRUN"
     echo "EXPORT: $EXPORT"
-    echo "DEBUG: $DEBUG"
+    echo "EXPORT_FORMAT: $EXPORT_FORMAT"
+    echo "QUIET: $QUIET"
 }
 
 _check_env() {
+    if [[ "$EXPORT_FORMAT" != "" ]]; then
+        # Validate EXPORT_FORMAT has valid values
+        if [[ "$EXPORT_FORMAT" = "sh" ]] || [[ "$EXPORT_FORMAT" = "md" ]]; then
+            EXPORT=true
+        else
+            echo "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: '$EXPORT_FORMAT'"
+            debug_info
+            exit 1
+        fi
+    fi
+
     # EXPORT can't be set with QUIET and DRYRUN
     # exit if set together
     if [ "$EXPORT" = "true" ] && [ "$QUIET" = "true" ] && [ "$DRYRUN" = "true" ]; then
@@ -70,86 +84,192 @@ _check_env
 DEMO_HISTFILE=$(mktemp)
 
 _print_sigint_ctrl_c() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
     fi
 }
 
 _print_entering_bash() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
     fi
 }
 
 _print_exiting_bash() {
-    if [ "$QUIET" != "true" ]; then
-        echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
+        echo -e "${C_INTERACTIVE}Exiting bash...${NC}\n"
     fi
 }
 
 _print_press_enter_to_continue() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
     fi
 }
 
 _print_header() {
-    echo -e "${C_HEADER}========================================${NC}"
-    echo -e "${C_HEADER_TEXT}$@${NC}"
-    echo -e "${C_HEADER}========================================${NC}\n"
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_header "$@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_header "$@"
+        else
+            _export_sh_header "$@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
+        echo -e "${C_HEADER}========================================${NC}"
+        echo -e "${C_HEADER_TEXT}$@${NC}"
+        echo -e "${C_HEADER}========================================${NC}\n"
+    fi
 }
 
 _print_first_line() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "$@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "$@"
+        else
+            _export_sh_comment "$@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$@${NC}"
     fi
 }
 
 
 _print_line() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "$@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "$@"
+        else
+            _export_sh_comment "$@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "  ${C_TEXT}$@${NC}"
     fi
 }
 
 _print_newline() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        echo
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo
     fi
 }
 
 _clear() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         clear
     fi
 }
 
 _print_success() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "$@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "$@"
+        else
+            _export_sh_comment "$@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "\n${C_SUCCESS}${S_SUCCESS}${NC} ${C_HEADER_TEXT}$@${NC}\n"
     fi
 }
 
 _print_error() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "ERR: $@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "ERR: $@"
+        else
+            _export_sh_comment "ERR: $@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "\n${C_ERROR}${S_ERROR}${NC} ${C_HEADER_TEXT}ERR: $@${NC}\n"
     fi
 }
 
 _print_warning() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "WRN: $@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "WRN: $@"
+        else
+            _export_sh_comment "WRN: $@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "\n${C_WARNING}${S_WARNING}${NC} ${C_HEADER_TEXT}WRN: $@${NC}\n"
     fi
 }
 
 _print_info() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "INF: $@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "INF: $@"
+        else
+            _export_sh_comment "INF: $@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "${C_INFO}${S_INFO}${NC} ${C_COMMAND_TEXT}INF: $@${NC}"
     fi
 }
 
 _print_separator() {
-    if [ "$QUIET" != "true" ]; then
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_comment "----------------------------------------"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_comment "----------------------------------------"
+        else
+            _export_sh_comment "----------------------------------------"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
         echo -e "${C_SEPARATOR}----------------------------------------${NC}"
     fi
 }
@@ -161,14 +281,39 @@ _print_debug_short_separator() {
 }
 
 _print_command() {
-    if [ "$QUIET" != "true" ]; then
-        echo -e "${C_COMMAND}$ ${C_COMMAND_TEXT}$@${NC}"
+    # Print command with $ in front
+    # if EXPORT is true, print the command as a comment
+    # if QUIET is true, do not print the command
+    # if DRYRUN is true, print the command
+    # _print_command will understand the EXPORT, QUIET, and DRYRUN vars
+
+    # Examples:
+    # _print_command "echo 'This is a command'"
+    # $ echo 'This is a command'
+    # EXPORT=true _print_command "echo 'This is a command'"
+    # # echo 'This is a command'
+    # QUIET=true _print_command "echo 'This is a command'"
+    # DRYRUN=true _print_command "echo 'This is a command'"
+    # echo 'This is a command'
+
+    if [ "$EXPORT" = "true" ]; then
+        if [ -z "$EXPORT_FORMAT" ]; then
+            _export_sh_command "$@"
+        elif [ "$EXPORT_FORMAT" = "sh" ]; then
+            _export_sh_command "$@"
+        else
+            _export_sh_command "$@"
+        fi
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
+    else
+        echo -e "${C_COMMAND}${S_COMMAND}${NC} ${C_COMMAND_TEXT}$@${NC}"
     fi
 }
 
 _print_debug() {
     if [ "$DEBUG" = "true" ]; then
-        echo -e "${C_DEBUG}$ ${C_DEBUG_TEXT}$@${NC}"
+        echo -e "${C_DEBUG}${S_DEBUG}${NC} ${C_DEBUG_TEXT}$@${NC}"
     fi
 }
 
@@ -185,6 +330,72 @@ handle_sigint() {
     _print_entering_bash
     b
     _print_press_enter_to_continue
+}
+
+# --- --- --- Export functions --- --- ---
+
+# --- --- Export functions for markdown --- ---
+_export_md_comment() {
+    # Export input as a comment for markdown
+    #
+    # Example:
+    # _export_md_comment "This is a comment"
+    # # This is a comment
+    echo "$@" | fold -s -w 78 | sed 's/^/# /'
+}
+
+_export_md_header() {
+    # Export input as a header for markdown
+    #
+    # Example:
+    # _export_md_header "This is a header"
+    # # ========================================"
+    # #  This is a header
+    # # ========================================"
+    echo "# $1"
+}
+
+_export_md_noop () {
+    # Do nothing
+    :  # do nothing
+}
+
+# --- --- --- Export functions for shell --- --- ---
+_export_sh_comment() {
+    # Export input as a comment for shell
+    #
+    # Example:
+    # _export_sh_comment "This is a comment"
+    # # This is a comment
+    echo "$@" | fold -s -w 78 | sed 's/^/# /'
+}
+
+_export_sh_command() {
+    # Export input as a command for shell
+    #
+    # Example:
+    # _export_sh_command "echo 'This is a command"
+    # echo 'This is a command'
+    echo "$@"
+}
+
+_export_sh_header() {
+    # Export input as a header for shell
+    #
+    # Example:
+    # _export_sh_header "This is a header"
+    # # ========================================"
+    # #  This is a header
+    # # ========================================"
+    echo "# ========================================"
+    echo "#  $1"
+    echo "# ========================================"
+    echo
+}
+
+_export_sh_noop() {
+    # Do nothing
+    :  # do nothing
 }
 
 # Set up the trap
@@ -204,7 +415,7 @@ hh() {
 
 # print a debug message
 d() { 
-    _print_debug "$1"
+    _print_debug "$@"
 }
 
 # Function to print step messages
@@ -223,39 +434,52 @@ p() {
 
 # Function to print success messages
 ps() {
-    _print_success $1
+    _print_success "$@"
 }
 
 # Function to print error messages
 pe() {
-    _print_error $1
+    _print_error "$@"
 }
 
 # Function to print warning messages
 pw() {
-    _print_warning $1
+    _print_warning "$@"
 }
 
 # Function to print info messages
 pi() {
-    _print_info $1
+    _print_info "$@"
 }
 
 # Function to print section separators
 p-() {
-    _print_separator $1
+    _print_separator "$@"
 }
 
 # Function to print command in red and execute it
 # put a newline at the end
 e() {
+    # Print command and run it
+    # if EXPORT is true, just print the command
+    # if QUIET is true, do not print the command but still run it
+    # if DRYRUN is true, print the command do not run it
+    # _print_command will understand the EXPORT, QUIET, and DRYRUN vars
     _print_command $1
+    if [ "$EXPORT" = "true" ] || [ "$DRYRUN" = "true" ]; then
+        return
+    fi
 
     # Append command to global history file
     echo "$1" >> "$DEMO_HISTFILE"
 
-    # Execute with HISTFILE set
-    HISTFILE="$DEMO_HISTFILE" bash -c "$1"
+    if [ "$QUIET" = "true" ]; then  
+        # run command and redirect its output to /dev/null
+        HISTFILE="$DEMO_HISTFILE" bash -c "$1" >/dev/null 2>&1
+    else
+        # Execute with HISTFILE set
+        HISTFILE="$DEMO_HISTFILE" bash -c "$1"
+    fi
     local exit_code=$?
     _print_newline
     return $exit_code
@@ -263,18 +487,26 @@ e() {
 
 # Function to print command in red and execute it with timeout
 et() {
-    local timeout_duration="${2:-30}"  # Default 30 seconds
     _print_command $1
+    if [ "$EXPORT" = "true" ] || [ "$DRYRUN" = "true" ]; then
+        return
+    fi
+
+    local timeout_duration="${2:-30}"  # Default 30 seconds
 
     # Append command to global history file
     echo "$1" >> "$DEMO_HISTFILE"
 
-    HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1"
+    if [ "$QUIET" = "true" ]; then
+        # run command and redirect its output to /dev/null
+        HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
+    else
+        HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1"
+    fi
     local exit_code=$?
     if [ $exit_code -eq 124 ]; then
         pw "Command timed out after ${timeout_duration} seconds"
     fi
-    return $exit_code
 }
 
 ed() {
@@ -293,6 +525,10 @@ w() {
     if [ "${GOON:-false}" = "true" ]; then
         # If GOON is true, continue without pausing
         return
+    elif [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
     else
         # If GOON is false or not set, wait for user input
         _print_press_enter_to_continue
@@ -301,70 +537,27 @@ w() {
 }
 
 b() {
-    if [ -z "$DEMO_NAME" ]; then
-        DEMO=demo
+    if [ "$EXPORT" = "true" ]; then
+        _export_sh_noop
+    elif [ "$QUIET" = "true" ]; then
+        _export_sh_noop
     else
-        DEMO=$DEMO_NAME
+        if [ -z "$DEMO_NAME" ]; then
+            DEMO=demo
+        else
+            DEMO=$DEMO_NAME
+        fi
+        HISTFILE="$DEMO_HISTFILE" PS1="\[${C_INTERACTIVE}\]($DEMO) \$ \[${NC}\]" bash --rcfile <(
+            echo "set +h"
+            echo "history -r '$DEMO_HISTFILE'"
+            echo "trap 'history -w \"$DEMO_HISTFILE\"' EXIT"
+            echo "# Load bash completion"
+            echo "if [ -f /etc/bash_completion ]; then"
+            echo "    . /etc/bash_completion"
+            echo "elif [ -f /usr/share/bash-completion/bash_completion ]; then"
+            echo "    . /usr/share/bash-completion/bash_completion"
+            echo "fi"
+        )
+        _print_exiting_bash
     fi
-    HISTFILE="$DEMO_HISTFILE" PS1="\[${C_INTERACTIVE}\]($DEMO) \$ \[${NC}\]" bash --rcfile <(
-        echo "set +h"
-        echo "history -r '$DEMO_HISTFILE'"
-        echo "trap 'history -w \"$DEMO_HISTFILE\"' EXIT"
-        echo "# Load bash completion"
-        echo "if [ -f /etc/bash_completion ]; then"
-        echo "    . /etc/bash_completion"
-        echo "elif [ -f /usr/share/bash-completion/bash_completion ]; then"
-        echo "    . /usr/share/bash-completion/bash_completion"
-        echo "fi"
-    )
-    _print_exiting_bash
 }
-
-# Export mode function overrides
-if [ "$EXPORT" = true ]; then
-    # Export versions of functions - convert output to comments or commands
-    _export_comment() {
-        echo "$1" | fold -s -w 78 | sed 's/^/# /'
-    }
-
-    _export_header() {
-        echo "# ========================================"
-        echo "#  $1"
-        echo "# ========================================"
-        echo
-    }
-
-    _export_noop() {
-        :  # do nothing
-    }
-
-    # Override functions for export mode
-    h() { _export_header "$1"; }
-    hh() { _export_header "$1"; }
-    p() { _export_comment "$1"; }
-    ps() { _export_comment "$1"; }
-    pe() { _export_comment "ERR: $1"; }
-    pw() { _export_comment "WRN: $1"; }
-    pi() { _export_comment "INF: $1"; }
-    p-() { echo "# ----------------------------------------"; }
-    e() { echo "$1"; }
-    et() { echo "$1"; }  # ignore timeout parameter in export mode
-    w() { _export_noop; }
-    b() { _export_noop; }
-fi
-
-if [ "$DRYRUN" = true ]; then
-    _dry_run() {
-        _print_command "$1"
-    }
-
-    # override exec functions
-    e() { _dry_run "$1"; }
-    et() { _dry_run "$1"; }
-    b() {
-        :
-    }
-    w() {
-        :
-    }
-fi

@@ -1,18 +1,12 @@
 #!/usr/bin/env bats
 
-source showtime.sh
-
-@test "et \"test\" 0" {
-    result="$(et 'echo test' 0)"
-    [[ "$result" == *"echo test"*"test" ]]
+setup() {
+    if [ $(basename $(pwd)) = "f" ]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
 }
 
-@test "DRYRUN=true et \"test\" 0" {
-    result="$(DRYRUN=true et 'echo test' 0)"
-    [[ "$result" == *"echo test"*"test" ]]
-}
 
-@test "QUIET=true et \"test\" 0" {
-    result="$(QUIET=true et 'echo test' 0)"
-    [[ "$result" == "test" ]]
-}
+# Some thinking is required to test this

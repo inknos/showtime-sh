@@ -1,6 +1,12 @@
 #!/usr/bin/env bats
 
-source ../../showtime.sh
+setup() {
+    if [ $(basename $(pwd)) = "_" ]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
+}
 
 @test "_print_debug_short_separator" {
     run _print_debug_short_separator

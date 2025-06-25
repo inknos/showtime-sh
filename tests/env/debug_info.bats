@@ -1,59 +1,79 @@
 #!/usr/bin/env bats
 
 setup() {
-    source showtime.sh
+    if [ $(basename $(pwd)) = "env" ]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
 }
 
-function debug_info_test { #@test
+@test "debug_info" {
     run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: " ]]
+    [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
-    [[ "${lines[3]}" = "DEBUG: " ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: " ]]
 }
 
-function debug_info_test_quiet_eq_true { #@test
+@test "debug_info with QUIET=true" {
     QUIET=true run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: true" ]]
+    [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
-    [[ "${lines[3]}" = "DEBUG: " ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: true" ]]
 }
 
-function debug_info_test_dryrun_eq_true { #@test
+@test "debug_info with DRYRUN=true" {
     DRYRUN=true run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: " ]]
+    [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: true" ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
-    [[ "${lines[3]}" = "DEBUG: " ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: " ]]
 }
 
-function debug_info_test_export_eq_true { #@test
+@test "debug_info with EXPORT=true" {
     EXPORT=true run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: " ]]
+    [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: true" ]]
-    [[ "${lines[3]}" = "DEBUG: " ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: " ]]
 }
 
-function debug_info_test_debug_eq_true { #@test
+@test "debug_info with DEBUG=true" {
     DEBUG=true run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: " ]]
+    [[ "${lines[0]}" = "DEBUG: true" ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
-    [[ "${lines[3]}" = "DEBUG: true" ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: " ]]
 }
 
-function debug_info_test_all_eq_true { #@test
+@test "debug info with EXPORT_FORMAT=sh" {
+    EXPORT_FORMAT=sh run debug_info
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "DEBUG: " ]]
+    [[ "${lines[1]}" = "DRYRUN: " ]]
+    [[ "${lines[2]}" = "EXPORT: " ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: sh" ]]
+    [[ "${lines[4]}" = "QUIET: " ]]
+}
+
+@test "debug_info with all set to true" {
     QUIET=true DEBUG=true DRYRUN=true EXPORT=true run debug_info
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" = "QUIET: true" ]]
+    [[ "${lines[0]}" = "DEBUG: true" ]]
     [[ "${lines[1]}" = "DRYRUN: true" ]]
     [[ "${lines[2]}" = "EXPORT: true" ]]
-    [[ "${lines[3]}" = "DEBUG: true" ]]
+    [[ "${lines[3]}" = "EXPORT_FORMAT: " ]]
+    [[ "${lines[4]}" = "QUIET: true" ]]
 }

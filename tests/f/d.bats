@@ -1,40 +1,39 @@
 #!/usr/bin/env bats
 
-source showtime.sh
+setup() {
+    if [ $(basename $(pwd)) = "f" ]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
+}
+
+@test "d \"test\"" {
+    run d "test"
+    [ "$status" -eq 0 ]
+    [[ "${#lines[@]}" -eq 0 ]]
+}
 
 @test "DEBUG=true d \"test\"" {
-    result="$(d 'test')"
-    [[ "$result" = *"test"* ]]
+    DEBUG=true run d "test"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_DEBUG}"*"test"* ]]
 }
 
 @test "DEBUG=true DRYRUN=true d \"test\"" {
-    result="$(DRYRUN=true d 'test')"
-    [[ "$result" = *"test"* ]]
+    DEBUG=true DRYRUN=true run d "test"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_DEBUG}"*"test"* ]]
 }
 
 @test "DEBUG=true QUIET=true d \"test\"" {
-    result="$(QUIET=true d 'test')"
-    [[ "$result" = "" ]]
+    DEBUG=true QUIET=true run d "test"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_DEBUG}"*"test"* ]]
 }
 
-@test "DEBUG=true DRYRUN=true QUIET=true d \"test\"" {
-    result="$(QUIET=true DRYRUN=true d 'test')"
-    [[ "$result" = "" ]]
-}
-
-# DEBUG=false
-
-@test "DEBUG=false d \"test\"" {
-    result="$(DEBUG=false d 'test')"
-    [[ "$result" = "" ]]
-}
-
-@test "DEBUG=false DRYRUN=true d \"test\"" {
-    result="$(DEBUG=false DRYRUN=true d 'test')"
-    [[ "$result" = "" ]]
-}
-
-@test "DEBUG=false QUIET=true d \"test\"" {
-    result="$(QUIET=true d 'test')"
-    [[ "$result" = "" ]]
+@test "DEBUG=true EXPORT=true S_DEBUG=\"!\" d \"test\"" {
+    DEBUG=true EXPORT=true S_DEBUG="!" run d "test"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"!"*"test"* ]]
 }

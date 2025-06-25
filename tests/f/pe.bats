@@ -1,19 +1,33 @@
 #!/usr/bin/env bats
 
-source showtime.sh
-
+setup() {
+    if [ $(basename $(pwd)) = "f"]; then
+        source ../../showtime.sh
+    else
+        source showtime.sh
+    fi
+}
 
 @test "pe \"test\"" {
-    result="$(pe 'test')"
-    [[ "$result" = *"${S_ERROR}"*"ERR: test"* ]]
+    run pe 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_ERROR}"*"ERR: test"* ]]
 }
 
 @test "DRYRUN=true pe \"test\"" {
-    result="$(DRYRUN=true pe 'test')"
-    [[ "$result" = *"${S_ERROR}"*"ERR: test"* ]]
+    DRYRUN=true run pe 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"${S_ERROR}"*"ERR: test"* ]]
+}
+
+@test "EXPORT=true pe \"test\"" {
+    EXPORT=true run pe 'test'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "# ERR: test" ]]
 }
 
 @test "QUIET=true pe \"test\"" {
-    result="$(QUIET=true pe 'test')"
-    [[ "$result" = "" ]]
+    QUIET=true run pe 'test'
+    [ "$status" -eq 0 ]
+    [[ "${#lines[@]}" -eq 0 ]]
 }

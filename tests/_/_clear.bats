@@ -1,6 +1,12 @@
 #!/usr/bin/env bats
 
-source ../../showtime.sh
+setup() {
+    if [ $(basename $(pwd)) = "_" ]; then
+        source ../../showtime.sh
+    else
+        source ./showtime.sh
+    fi
+}
 
 @test "_clear" {
     # Since _clear() calls the clear command, we can only test it doesn't error
