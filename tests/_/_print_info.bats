@@ -1,14 +1,16 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_info()" {
-    result="$(_print_info 'test info')"
-    [[ "$result" == *"INF: test info"* ]]
-    [[ "$result" == *"ℹ"* ]]
+@test "_print_info" {
+    run _print_info 'test info'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"INF: test info"* ]]
+    [[ "${lines[0]}" == *"ℹ"* ]]
 }
 
-@test "test _print_info() with QUIET=true" {
-    result="$(QUIET=true _print_info 'test info')"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_info" {
+    QUIET=true run _print_info 'test info'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

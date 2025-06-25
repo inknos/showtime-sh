@@ -1,14 +1,16 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_debug()" {
-    result="$(_print_debug 'debug message')"
-    [[ "$result" == "" ]]
+@test "_print_debug" {
+    run _print_debug 'debug message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 }
 
-@test "test _print_debug() with DEBUG=true" {
-    result="$(DEBUG=true _print_debug 'debug message')"
-    [[ "$result" == *"debug message"* ]]
-    [[ "$result" == *"$"* ]]
+@test "DEBUG=true _print_debug" {
+    DEBUG=true run _print_debug 'debug message'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"debug message"* ]]
+    [[ "${lines[0]}" == *"$"* ]]
 } 

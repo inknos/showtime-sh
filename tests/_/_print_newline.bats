@@ -1,13 +1,15 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_newline()" {
-    result="$(_print_newline)"
-    [[ "$result" == $'\n' ]]
+@test "_print_newline" {
+    run _print_newline
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 }
 
-@test "test _print_newline() with QUIET=true" {
-    result="$(QUIET=true _print_newline)"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_newline" {
+    QUIET=true run _print_newline
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

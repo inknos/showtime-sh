@@ -1,9 +1,10 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_header()" {
-    result="$(_print_header 'Test Header')"
-    [[ "$result" == *"Test Header"* ]]
-    [[ "$result" == *"========"* ]]
+@test "_print_header" {
+    run _print_header 'Test Header'
+    [ "$status" -eq 0 ]
+    [[ "${lines[1]}" == *"Test Header"* ]]
+    [[ "${lines[0]}" == *"========"* ]]
 } 

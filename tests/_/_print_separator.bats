@@ -1,13 +1,15 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_separator()" {
-    result="$(_print_separator)"
-    [[ "$result" == *"----"* ]]
+@test "_print_separator" {
+    run _print_separator
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"----"* ]]
 }
 
-@test "test _print_separator() with QUIET=true" {
-    result="$(QUIET=true _print_separator)"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_separator" {
+    QUIET=true run _print_separator
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

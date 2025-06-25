@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
 @test "_clear" {
     # Since _clear() calls the clear command, we can only test it doesn't error

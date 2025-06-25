@@ -1,13 +1,15 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_exiting_bash()" {
-    result="$(_print_exiting_bash)"
-    [[ "$result" == *"Entering bash"* ]]
+@test "_print_exiting_bash" {
+    run _print_exiting_bash
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"Entering bash"* ]]
 }
 
-@test "test _print_exiting_bash() with QUIET=true" {
-    result="$(QUIET=true _print_exiting_bash)"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_exiting_bash" {
+    QUIET=true run _print_exiting_bash
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

@@ -1,14 +1,16 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_warning()" {
-    result="$(_print_warning 'test warning')"
-    [[ "$result" == *"WRN: test warning"* ]]
-    [[ "$result" == *"⚠"* ]]
+@test "_print_warning" {
+    run _print_warning 'test warning'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"WRN: test warning"* ]]
+    [[ "${lines[0]}" == *"⚠"* ]]
 }
 
-@test "test _print_warning() with QUIET=true" {
-    result="$(QUIET=true _print_warning 'test warning')"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_warning" {
+    QUIET=true run _print_warning 'test warning'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

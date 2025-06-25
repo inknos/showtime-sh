@@ -1,13 +1,15 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_debug_short_separator()" {
-    result="$(_print_debug_short_separator)"
-    [[ "$result" == "" ]]
+@test "_print_debug_short_separator" {
+    run _print_debug_short_separator
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 }
 
-@test "test _print_debug_short_separator() with DEBUG=true" {
-    result="$(DEBUG=true _print_debug_short_separator)"
-    [[ "$result" == *"---"* ]]
+@test "DEBUG=true _print_debug_short_separator" {
+    DEBUG=true run _print_debug_short_separator
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"---"* ]]
 } 

@@ -1,13 +1,15 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_sigint_ctrl_c()" {
-    result="$(_print_sigint_ctrl_c)"
-    [[ "$result" == *"Ctrl+C detected"* ]]
+@test "_print_sigint_ctrl_c" {
+    run _print_sigint_ctrl_c
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"Ctrl+C detected"* ]]
 }
 
-@test "test _print_sigint_ctrl_c() with QUIET=true" {
-    result="$(QUIET=true _print_sigint_ctrl_c)"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_sigint_ctrl_c" {
+    QUIET=true run _print_sigint_ctrl_c
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 

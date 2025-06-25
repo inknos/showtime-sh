@@ -1,14 +1,16 @@
 #!/usr/bin/env bats
 
-source ../showtime.sh
+source ../../showtime.sh
 
-@test "test _print_error()" {
-    result="$(_print_error 'test error')"
-    [[ "$result" == *"ERR: test error"* ]]
-    [[ "$result" == *"✗"* ]]
+@test "_print_error" {
+    run _print_error 'test error'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" == *"ERR: test error"* ]]
+    [[ "${lines[0]}" == *"✗"* ]]
 }
 
-@test "test _print_error() with QUIET=true" {
-    result="$(QUIET=true _print_error 'test error')"
-    [[ "$result" == "" ]]
+@test "QUIET=true _print_error" {
+    QUIET=true run _print_error 'test error'
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
 } 
