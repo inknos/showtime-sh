@@ -33,26 +33,6 @@ Inside each demo directory you can make use of other files as well like
 `clean.sh`, `offline.sh` and `theme.sh`. None of these files are
 mandatory.
 
-
-## Usage with `./run` script
-
-```bash
-# Run demos with:
-./run examples/minimal
-
-# Skip wait times with -y
-./run examples/minimal -y
-
-# Export your code to a bash file with `--export`
-./run examples/minimal --export
-
-# Define and run clean steps with `--clean`
-./run examples/minimal --export
-
-# Define and run offline setup for your demos with `--offline`
-./run examples/minimal --offline
-```
-
 ## Usage with env variables
 
 ```bash
@@ -70,6 +50,31 @@ QUIET=true ./examples/minimal/demo.sh
 
 # Dry Run the demo with `DRYRUN`
 DRYRUN=true ./examples/minimal/demo.sh
+
+# Run with debug messages enabled (uses e)
+DEBUG=true ./example/minimal/demo.sh
+
+# Run debug messages only
+DEBUG=true QUIET=true ./example/minimal/demo.sh
+```
+
+## Usage with `./run` script (it's a bit buggy)
+
+```bash
+# Run demos with:
+./run examples/minimal
+
+# Skip wait times with -y
+./run examples/minimal -y
+
+# Export your code to a bash file with `--export`
+./run examples/minimal --export
+
+# Define and run clean steps with `--clean`
+./run examples/minimal --export
+
+# Define and run offline setup for your demos with `--offline`
+./run examples/minimal --offline
 ```
 
 ## Functions
