@@ -1,4 +1,4 @@
-FROM quay.io/libpod/alpine:latest
+FROM alpine:latest
 
 RUN apk add --no-cache bash
 

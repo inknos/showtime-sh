@@ -618,16 +618,20 @@ b() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 # Function to display usage
+# Strip /bin if called directly
+# TODO needs tests
+EXEC_PATH="${0#/bin/}"
+
 usage() {
-    echo "Usage: $0 <demo_name> [--clean|-y]"
+    echo "Usage: $EXEC_PATH <demo_name> [--clean|-y]"
     echo "Examples:"
-    echo "  $0 mydemo            # Run demo mydemo"
-    echo "  $0 mydemo --clean    # Clean demo mydemo"
-    echo "  $0 mydemo -y         # Run demo mydemo without pausing"
-    echo "  $0 mydemo --dryrun   # Run everything without executing"
-    echo "  $0 mydemo --export   # Export demo to stdout"
-    echo "  $0 mydemo --offline  # Run demo mydemo offline steps (if defined)"
-    echo "  $0 mydemo --quiet    # Run without printing anything"
+    echo "  $EXEC_PATH mydemo            # Run demo mydemo"
+    echo "  $EXEC_PATH mydemo --clean    # Clean demo mydemo"
+    echo "  $EXEC_PATH mydemo -y         # Run demo mydemo without pausing"
+    echo "  $EXEC_PATH mydemo --dryrun   # Run everything without executing"
+    echo "  $EXEC_PATH mydemo --export   # Export demo to stdout"
+    echo "  $EXEC_PATH mydemo --offline  # Run demo mydemo offline steps (if defined)"
+    echo "  $EXEC_PATH mydemo --quiet    # Run without printing anything"
     exit 1
 }
 
@@ -636,11 +640,26 @@ if [ $# -eq 0 ]; then
     usage
 fi
 
-DEMO_NAME=$1
+# strips last /
+# strip first ./
+# strip first /
+#
+# ./show examples/minimal/
+# ./show examples/minimal
+# ./show /examples/minimal
+# ./show ./examples/minimal
+#
+# will result in DEMO_NAME=examples/minimal
+#
+# TODO needs tests!
+DEMO_DIR=$1
+DEMO_NAME=${DEMO_DIR%/}
+DEMO_NAME="${DEMO_NAME#./}"
+DEMO_NAME="${DEMO_NAME#/}"
 CLEAN_MODE=false
 
 # Initialize GOON variable
-GOON=false
+GOON={$GOON:-false}
 
 # Check for --clean or -y flag
 if [ $# -eq 2 ]; then
@@ -677,8 +696,6 @@ fi
 #         exit 1
 #         ;;
 # esac
-
-DEMO_DIR="./$DEMO_NAME"
 
 # Check if demo directory exists
 if [ ! -d "$DEMO_DIR" ]; then
