@@ -1,6 +1,10 @@
 #!/bin/bash
 
-source ../../showtime.sh
+if [ $(basename $(pwd)) = "minimal" ]; then
+    source ../../showtime.sh
+else
+    source ./showtime.sh
+fi
 
 h "This is a great demo!"
 
