@@ -12,7 +12,7 @@ documentation for details.
 
 
 .. toctree::
-   show.1.rst
+   show.1
    :maxdepth: 2
    :caption: Contents:
 

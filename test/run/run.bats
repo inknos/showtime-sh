@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
 setup() {
-    if [ $(basename $(pwd)) = "run"]; then
-        source ../../showtime.sh
-    else
-        source showtime.sh
-    fi
+    load ../import_showtime.bash
 }
 
-# run tests go here
+@test "./show" {
+    run ./show
+    [ "$status" -eq 1 ]
+    [[ "$lines[0]" = "Usage"* ]]
+}
