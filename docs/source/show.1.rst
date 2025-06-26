@@ -25,74 +25,59 @@ CLI OPTIONS
 .. _show-cli-options-clean:
 
 **--clean**
-:   Run the clean script for the demo (clean.sh)
+:   Run the clean script for the demo.
 
-.. _show-options-y:
+    See :ref:`clean.sh <show-dir-structure-clean-sh>` for more information.
+
+.. _show-cli-options-y:
 
 **-y**
-:   Run demo without pausing
-    
-    Sets *GOON=true*
+:   Run demo without pausing.
 
-.. _show-options-export:
+    See :ref:`GOON <show-environment-variables-runtime-goon>` for more information.
+
+.. _show-cli-options-export:
 
 **--export** / **--export sh** / **--export md**
-:   Export demo to stdout in shell script format
+:   Export demo to stdout in shell script format.
 
-    Sets *EXPORT=true* and *EXPORT_FORMAT={sh.md}*
+    See :ref:`EXPORT <show-environment-variables-runtime-export>` and
+    :ref:`EXPORT_FORMAT <show-environment-variables-runtime-export-format>` for more information.
 
-.. _show-options-offline:
+.. _show-cli-options-offline:
 
 **--offline**
-:   Run offline steps for the demo (offline.sh)
+:   Run offline steps for the demo.
 
-.. _show-options-quiet:
+    See :ref:`offline.sh <show-dir-structure-offline-sh>` for more information.
+
+.. _show-cli-options-quiet:
 
 **--quiet**
-:   Run without printing anything
+:   Run without printing anything.
 
-    Sets *QUIET=true*
+    See :ref:`QUIET <show-environment-variables-runtime-quiet>` for more information.
 
-.. _show-options-dryrun:
+.. _show-cli-options-dryrun:
 
 **--dryrun**
-:   Run everything without executing commands
+:   Run everything without executing commands.
 
-.. _show-options-help:
+    See :ref:`DRYRUN <show-environment-variables-runtime-dryrun>` for more information.
+
+.. _show-cli-options-help:
 
 **-h, --help**
 :   Show the help message and exit
-
 
 .. _show-dir-structure:
 
 DIR STRUCTURE
 =============
 
-You should create a directory for your demo. The only mandatory file is **demo.sh** but you can add other files to it like **clean.sh**, **offline.sh**, and **theme.sh**
-
-.. _show-dir-structure-demo-sh:
-
-**demo.sh**
-
-Contains your demo. Use the functions listed in the `FUNCTIONS <_show_functions>` section to create your demo.
-
-**clean.sh**
-
-Contains the clean script for your demo. It's executed with the `--clean <_show_cli-options-clean>` option.
-
-**offline.sh**
-
-Contains the offline script for your demo.
-
-Let's say that you need to have some steps which will require to download some big files that you don't want to run every time you run the demo.
-This is where **offline.sh** comes in. **offline.sh** will be executed with the `--offline <_show_cli-options-offline>` option.
-
-**theme.sh**
-
-Contains the theme for your demo. It's included by default if you run the demo with the `run <_show_cli-options>` command.
-
-An example of dir structure could look like this:
+To make the best from this package, you should create a directory for your demo.
+The file structure should be organized as follows. There is one mandatory file, which is **demo.sh**,
+but you can add other files to it like **clean.sh**, **offline.sh**, and **theme.sh**.
 
 .. code-block:: bash
 
@@ -102,7 +87,40 @@ An example of dir structure could look like this:
     ├── offline.sh
     └── theme.sh
 
-You can run the demo with *run my-demo* or *run my-demo/demo.sh*
+.. _show-dir-structure-demo-sh:
+
+**demo.sh**
+
+Contains your demo and it's the main argument that **show** looks for. The syntax is bash of course,
+and you can do all kind of operations inside it and use the functions listed
+in the :ref:`FUNCTIONS <show-functions>` section to create your demo.
+
+.. _show-dir-structure-clean-sh:
+
+**clean.sh**
+
+Contains the clean script for your demo.
+It's executed with the :ref:`--clean<show-cli-options-clean>` option and it's optional.
+
+.. _show-dir-structure-offline-sh:
+
+**offline.sh**
+
+Contains the offline script for your demo, and it is optional.
+
+Let's say that you need to have some steps which will require to download some big
+files that you don't want to run every time you run the demo.
+This is where **offline.sh** comes in. It will be executed with
+the :ref:`--offline <show-cli-options-offline>` option. It is optional.
+
+.. _show-dir-structure-theme-sh:
+
+**theme.sh**
+
+Contains the theme for your demo. It's included by if you
+run the demo with the :ref:`run <show-cli-options>` command.
+You should define there a bunch of variables that are documented under
+:ref:`CUSTOMIZATION <show-environment-variables-customization>` section.
 
 .. _show-functions:
 
@@ -116,16 +134,19 @@ You can define functions within your bash script that you call `demo.sh`. These 
 HEADERS
 -------
 
-.. _show-functions-headers-h:
+.. _show-functions-headers-h1:
 
-**h** *<header_title>*
+**h1** *<header_title>*
 :   Print a single header 1 and clear output
+
+    *QUIET=true* will not print the header and *EXPORT=true* will print the header in shell script format by default.
+    The same applies to other header functions.
 
     Example 1:
 
     .. code-block:: bash
 
-        bash -c 'source /bin/show; h "Header 1"'
+        bash -c 'source /bin/show; h1 "Header 1"'
 
         ##################
         #  Header 1
@@ -135,19 +156,20 @@ HEADERS
 
     .. code-block:: bash
 
-        bash -c 'source /bin/show; EXPORT_FORMAT=md h "Header 1"'
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h1 "Header 1"'
 
         # Header 1
 
+.. _show-functions-headers-h2:
 
-**hh** *<header_title>*
-:   Print a single header 2 and clear output
+**h2** *<header_title>*
+:   Print a single header 2 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
     Example 1:
 
     .. code-block:: bash
 
-        bash -c 'source /bin/show; hh "Header 2"'
+        bash -c 'source /bin/show; h2 "Header 2"'
 
         ##################
         # Header 2
@@ -157,69 +179,71 @@ HEADERS
 
     .. code-block:: bash
 
-        bash -c 'source /bin/show; EXPORT_FORMAT=md hh "Header 2"'
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h2 "Header 2"'
 
         ## Header 2
 
-**hhh** *<header_title>*
-:   Print a single header 3 and do not clear output
-
-    .. warning::
-        Not implemented yet
-
-**hhhh** *<header_title>*
-:   Print a single header 4 and do not clear output
-
-    .. warning::
-        Not implemented yet
-
-**hhhhh** *<header_title>*
-:   Print a single header 5 and do not clear output
-
-    .. warning::
-        Not implemented yet
-
-**hhhhhh** *<header_title>*
-:   Print a single header 6 and do not clear output
-
-    .. warning::
-        Not implemented yet
-
-**h1** *<header_title>*
-:   Same as **h**
-
-    .. warning::
-        Not implemented yet
-
-**h2** *<header_title>*
-:   Same as **hh**
-
-    .. warning::
-        Not implemented yet
+.. _show-functions-headers-h3:
 
 **h3** *<header_title>*
-:   Same as **hhh**
+:   Print a single header 3 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
-    .. warning::
-        Not implemented yet
+    .. code-block:: bash
+    
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h3 "Header 3"'
+
+        ### Header 3
+
+.. _show-functions-headers-h4:
 
 **h4** *<header_title>*
-:   Same as **hhhh**
+:   Print a single header 4 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
-    .. warning::
-        Not implemented yet
+    .. code-block:: bash
+    
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h4 "Header 4"'
+
+        #### Header 4
+
+.. _show-functions-headers-h5:
 
 **h5** *<header_title>*
-:   Same as **hhhhh**
+:   Print a single header 5 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
-    .. warning::
-        Not implemented yet
+    .. code-block:: bash
+    
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h5 "Header 5"'
+
+        ##### Header 5
+
+.. _show-functions-headers-h6:
 
 **h6** *<header_title>*
-:   Same as **hhhhhh**
+:   Print a single header 6 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
-    .. warning::
-        Not implemented yet
+    .. code-block:: bash
+    
+        bash -c 'source /bin/show; EXPORT_FORMAT=md h6 "Header 6"'
+
+        ##### Header 6
+
+**h** *<header_title>*
+:   Alias to :ref:`h1 <show-functions-headers-h1>`
+
+**hh** *<header_title>*
+:   Alias to :ref:`h2 <show-functions-headers-h2>`
+
+**hhh** *<header_title>*
+:   Alias to :ref:`h3 <show-functions-headers-h3>`
+
+**hhhh** *<header_title>*
+:   Alias to :ref:`h4 <show-functions-headers-h4>`
+
+**hhhhh** *<header_title>*
+:   Alias to :ref:`h5 <show-functions-headers-h5>`
+
+**hhhhhh** *<header_title>*
+:   Alias to :ref:`h6 <show-functions-headers-h6>`
 
 .. _show-functions-print:
 
@@ -243,7 +267,7 @@ PRINT
 
 .. _show-functions-print-pi:
 
-**pi** *<text>* / **info** *<text>*
+**pi** *<text>*
 :   Print info text. If text is longer than 80 characters, it will be wrapped.
 
     Silenced by *QUIET=true*
@@ -328,7 +352,7 @@ DEBUG
 
 .. warning::
 
-    The functions listed below are only run if *DEBUG=true*.
+    The functions listed below are only run if *DEBUG=true*. Check :ref:`DEBUG <show-environment-variables-runtime-debug>` for more information.
 
 .. _show-functions-debug-d:
 
@@ -381,14 +405,80 @@ ENVIRONMENT VARIABLES
 CUSTOMIZATION
 -------------
 
-Colors and Symbols
+Colors and symbols that can be customized. All color variables start with
+*C_* and all symbol variables start with *S_* and are documented below.
+Names should be self-explanatory.
+
+**C_HEADER**
+:   Color for header. Default is *cyan*
+
+**C_HEADER_TEXT**
+:   Color for header text. Default is *white*
+
+**C_SUCCESS**
+:   Color for success. Default is *green*
+
+**C_ERROR**
+:   Color for error. Default is *red*
+
+**C_WARNING**
+:   Color for warning. Default is *yellow*
+
+**C_INFO**
+:   Color for info. Default is *blue*
+
+**C_DEBUG**
+:   Color for debug. Default is *purple*
+
+**C_COMMAND**
+:   Color for command symbol. Default is *red*
+
+**C_COMMAND_TEXT**
+:   Color for command text. Default is *white*
+
+**C_TEXT**
+:   Color for text. Default is *yellow*
+
+**C_BULLET**
+:   Color for the bullet. Default is *green*
+
+**C_PROMPT**
+:   Color for prompt. Default is *dim cyan*
+
+**C_INTERACTIVE**
+:   Color for interactive prompt. Default is *purple*
+
+**C_SEPARATOR**
+:   Color for separator. Default is *dim cyan*
+
+**S_SUCCESS**
+:   Symbol for success. Default is *✓*
+
+**S_INFO**
+:   Symbol for info. Default is *ℹ*
+
+**S_WARNING**
+:   Symbol for warning. Default is *⚠*
+
+**S_ERROR**
+:   Symbol for error. Default is *✗*
+
+**S_DEBUG**
+:   Symbol for debug. Default is *$*
+
+**S_COMMAND**
+:   Symbol for command. Default is *$*
+
+**S_BULLET**
+:   Symbol for bullet. Default is *➤*
 
 .. _show-environment-variables-runtime:
 
 RUNTIME
 -------
 
-Variables that affect the runtime of the demo. It's better to avoid using them directly but to run your code by invoking the `run <_show_cli-options>` command.
+Variables that affect the runtime of the demo. It's better to avoid using them directly
+but to run your code by invoking the :ref:`run <show-cli-options>` command.
 
 .. _show-environment-variables-runtime-debug:
 
@@ -419,9 +509,10 @@ Variables that affect the runtime of the demo. It's better to avoid using them d
 .. _show-environment-variables-runtime-export-format:
 
 **EXPORT_FORMAT**
-:   If *sh*, exports demo in shell script format
+:   Defines the format of the exported demo. Allowed values are:
 
-    If *md*, exports demo in markdown format
+    * **sh**: exports demo in shell script format
+    * **md**: exports demo in markdown format
 
     Set *EXPORT=true*, *QUIET=true* and *GOON=true*
 
