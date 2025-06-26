@@ -5,34 +5,48 @@ setup() {
 }
 
 @test "_print_header" {
-    run _print_header 'Test Header'
+    run _print_header "1" "Test Header"
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" == *"========"* ]]
-    [[ "${lines[1]}" == *"Test Header"* ]]
-    [[ "${lines[2]}" == *"========"* ]]
-    [[ "${lines[3]}" == "" ]]
+    [[ "${lines[0]}" = *"========"* ]]
+    [[ "${lines[1]}" = *"Test Header"* ]]
+    [[ "${lines[2]}" = *"========"* ]]
+    [[ "${lines[3]}" = "" ]]
 }
 
 @test "DRYRUN=true _print_header" {
-    DRYRUN=true run _print_header 'Test Header'
+    DRYRUN=true run _print_header "1" "Test Header"
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" == *"========"* ]]
-    [[ "${lines[1]}" == *"Test Header"* ]]
-    [[ "${lines[2]}" == *"========"* ]]
-    [[ "${lines[3]}" == "" ]]
+    [[ "${lines[0]}" = *"========"* ]]
+    [[ "${lines[1]}" = *"Test Header"* ]]
+    [[ "${lines[2]}" = *"========"* ]]
+    [[ "${lines[3]}" = "" ]]
 } 
 
 @test "EXPORT=true _print_header" {
-    EXPORT=true run _print_header 'Test Header'
+    EXPORT=true run _print_header "1" "Test Header"
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" == "# ========================================" ]]
-    [[ "${lines[1]}" == "#  Test Header"* ]]
-    [[ "${lines[2]}" == "# ========================================" ]]
-    [[ "${lines[3]}" == "" ]]
+    [[ "${lines[0]}" = "# ========================================" ]]
+    [[ "${lines[1]}" = "#  Test Header"* ]]
+    [[ "${lines[2]}" = "# ========================================" ]]
+    [[ "${lines[3]}" = "" ]]
 }
 
 @test "QUIET=true _print_header" {
-    QUIET=true run _print_header 'Test Header'
+    QUIET=true run _print_header "1" "Test Header"
     [ "$status" -eq 0 ]
-    [[ "${lines[0]}" == "" ]]
+    [[ "${lines[0]}" = "" ]]
+}
+
+@test "EXPORT_FORMAT=md _print_header" {
+    EXPORT_FORMAT="md" run _print_header "1" "Test Header"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "# Test Header"* ]]
+    [[ "${lines[1]}" = "" ]]
+}
+
+@test "EXPORT_FORMAT=md _print_header 2" {
+    EXPORT_FORMAT=md run _print_header "2" "Test Header"
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "## Test Header"* ]]
+    [[ "${lines[1]}" = "" ]]
 }
