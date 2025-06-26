@@ -375,11 +375,12 @@ WAIT
 
 .. _show-functions-wait-w:
 
-**w** *<time>*
+**w** *[<time>]*
 
-:    Wait for time until continuuing. If *<time>* is not provided, wait for user to press enter to continue
+:    Wait for user input to continue. If *<time>* is provided, automatically
+    continue after that many seconds, but user can press Enter to continue immediately.
 
-    Skipped if *GOON=true* and output silenced if *QUIET=true* but it still waits for *<time>* seconds or until user presses enter
+    Skipped if *GOON=true* and output silenced if *QUIET=true* but it still waits for *<time>* seconds or until user presses enter.
 
 .. _show-functions-bash:
 

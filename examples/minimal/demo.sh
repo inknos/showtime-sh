@@ -41,10 +41,8 @@ and wait for the shell to spawn"
 
 w
 
-p "Back on track! End of the demo.
+p "Back on track! End of the demo. Now I'll wait for 2 seconds and exit automatically"
 
-Bye!"
+w 2
 
-w
-
-
+p "Bye!"
