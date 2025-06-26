@@ -55,7 +55,14 @@ podman build -t showtime .
 podman run --rm -it showtime examples/minimal
 ```
 
-Builds will come
+Builds will come...
+
+## Install as RPM
+
+```bash
+dnf copr enable -y nsella/showtime
+dnf install -y showtime
+```
 
 ## Direct usage
 
