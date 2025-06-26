@@ -11,6 +11,7 @@ License:        GPL-2.0-or-later
 URL:            https://codeberg.org/inknos/showtime
 Source0:        %{url}/archive/v%{version}.tar.gz
 
+BuildRequires:  make
 BuildRequires:  python3-sphinx
 Requires:       bash
 
