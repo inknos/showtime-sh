@@ -9,7 +9,7 @@
 project = 'showtime'
 copyright = '2025, Nicola Sella'
 author = 'Nicola Sella'
-release = '0.1'
+release = '0.2'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
