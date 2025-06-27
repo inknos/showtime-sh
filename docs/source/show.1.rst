@@ -10,7 +10,7 @@ show - Bash script to supercharge CLI demos
 SYNOPSIS
 ========
 
-**show** *demo_name* [*OPTION*]
+**show** [*OPTION*] *demo_name*
 
 .. _show-description:
 

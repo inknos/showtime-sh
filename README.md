@@ -212,3 +212,7 @@ bats --tap tests/*
 - make ^C trap optionally on or off
 - ensure the logic of DRYRUN, QUIET, EXPORT is correct
 - implement w time to optionally wait some seconds
+- ./show --dryrun examples/minimal enters bash and it shouldn't
+- ./show -y examples/minimal enters bash and it shouldn't
+- ./show --export md examples/minimal prints Running...
+- ./show -q examples/minimal prints Running...
