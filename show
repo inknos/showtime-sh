@@ -641,9 +641,13 @@ w() {
 
 b() {
     if [ "$EXPORT" = "true" ]; then
-        _export_sh_noop
+        : # do nothing
+    elif [ "$DRYRUN" = "true" ]; then
+        : # do nothing
     elif [ "$QUIET" = "true" ]; then
-        _export_sh_noop
+        : # do nothing
+    elif [ "$GOON" = "true" ]; then
+        : # do nothing
     else
         if [ -z "$DEMO_NAME" ]; then
             DEMO=demo

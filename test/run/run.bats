@@ -94,3 +94,61 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "${lines[0]}" = "offline" ]]
 }
+
+# Test how b behaves with --dryrun, --quiet, -y
+@test "./show --dryrun bash" {
+    run ./show --dryrun test/run/bash
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"bash"* ]]
+}
+
+@test "./show --quiet bash" {
+    run ./show --quiet test/run/bash
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
+}
+
+@test "./show -y bash" {
+    run ./show -y test/run/bash
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"bash"* ]]
+}
+
+# Test how w behaves with --dryrun, --quiet, -y
+@test "./show --dryrun wait_timeout" {
+    run ./show --dryrun test/run/wait_timeout
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"wait_timeout"* ]]
+}
+
+@test "./show --quiet wait_timeout" {
+    run ./show --quiet test/run/wait_timeout
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
+}
+
+@test "./show -y wait" {
+    run ./show -y test/run/wait
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"wait"* ]]
+    [[ "${lines[1]}" = *"done"* ]]
+}
+
+@test "./show -y --quiet wait" {
+    run ./show -y --quiet test/run/wait
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
+}
+
+@test "./show -y wait_timeout" {
+    run ./show -y test/run/wait_timeout
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = *"wait_timeout"* ]]
+    [[ "${lines[1]}" = *"done"* ]]
+}
+
+@test "./show -y --quiet wait_timeout" {
+    run ./show -y --quiet test/run/wait_timeout
+    [ "$status" -eq 0 ]
+    [[ "${lines[0]}" = "" ]]
+}
