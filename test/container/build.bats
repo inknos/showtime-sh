@@ -12,7 +12,7 @@ teardown_file() {
 
 @test "run container" {
     bats_require_minimum_version 1.5.0
-    run -1 podman run --rm -it showtime-bats show
+    run -1 podman run --rm -it showtime-bats
     [ "$status" -eq 1 ]
     [[ "${lines[0]}" = "Usage:"* ]]
 }

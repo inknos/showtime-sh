@@ -2,13 +2,13 @@
 %global debug_package %{nil}
 
 
-Name:           showtime
+Name:           showtime-sh
 Version:        0.2
 Release:        1%{?dist}
 Summary:        Bash script to supercharge CLI demos
 
 License:        GPL-2.0-or-later
-URL:            https://codeberg.org/inknos/showtime
+URL:            https://codeberg.org/inknos/showtime-sh
 Source0:        %{url}/archive/v%{version}.tar.gz
 
 BuildRequires:  make

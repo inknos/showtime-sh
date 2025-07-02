@@ -1,127 +1,161 @@
-# showtime
+`Showtime.sh`
+=============
 
 Supercharge your bash demo with this simple script.
 
-[![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
+Showtime.sh is the original name of a script that I used to `source` in
+scripts that I used to demo a feature used in a presentation
 
-## Getting showtime
+
+Table of Contents
+-----------------
+
+* [Features](#features)
+* [Install](#install)
+  * [Standalone script](#standalone-script)
+  * [Container](#container)
+  * [Install on Linux](#install-on-linux)
+* [Usage](#usage)
+
+Features
+--------
+
+Install
+-------
+
+### Standalone script
 
 ```bash
-curl -O https://codeberg.org/inknos/showtime/raw/branch/main/show
-```
-
-Then inside your demo
-
-```bash
-#!/bin/bash
-
-source ./show
-
-p "Hello world!"
-```
-
-If run it directly by:
-
-```bash
-curl -O https://codeberg.org/inknos/showtime/raw/branch/main/show
-chmod +x run
+git clone https://codeberg.org/inknos/showtime-sh.git
+cd showtime-sh
 ./show examples/minimal
 ```
 
-Inside of the directory you need to have at least a `demo.sh` file.
-Inside each demo directory you can make use of other files as well like
-`clean.sh`, `offline.sh` and `theme.sh`. None of these files are
-mandatory.
+### Container
+
+```bash
+git clone https://codeberg.org/inknos/showtime-sh.git
+cd showtime-sh
+podman build -t showtime-sh .
+podman run --rm -it -v $PWD/examples:/examples:Z showtime-sh examples/minimal
+```
+
+Container builds will come...
+
+### Install on Linux
+
+#### Install as RPM
+
+```bash
+dnf copr enable -y nsella/showtime-sh
+dnf install -y showtime-sh
+```
+
+Usage
+-----
+
+### Use the `show` command
+
+The `show` script provides a convenient way to run you demos.
+The script always looks for a `demo.sh` file inside the directory that
+you are passing as a command optrion.
+`demo.sh` is the only file explicitely required but you can specify
+other files that can be used by `show`.
+Inside each demo directory you can make use of `clean.sh`,
+`offline.sh` and `theme.sh`. None of these files are mandatory.
 
 ```bash
 # $ tree examples/
 # examples/
 # ├── colors
-# │   ├── demo.sh
-# │   └── theme.sh
+# │   ├── demo.sh     #  mandatory
+# │   └── theme.sh    #  optional but always sourced by `show`
 # ├── full
-# │   ├── clean.sh
-# │   ├── demo.sh
-# │   └── offline.sh
+# │   ├── clean.sh    #  optional and sourced only with --clean
+# │   ├── demo.sh     #  mandatory
+# │   └── offline.sh  #  optional and sourced only with --offline
 # └── minimal
-#     └── demo.sh
+#     └── demo.sh     #  mandatory
 ```
 
-## Run in a container
+Basic run
 
 ```bash
-# clone the repo and cd into it
-podman build -t showtime .
-podman run --rm -it showtime examples/minimal
-```
-
-Builds will come...
-
-## Install as RPM
-
-```bash
-dnf copr enable -y nsella/showtime
-dnf install -y showtime
-```
-
-## Direct usage
-
-```bash
-# Run a demo with
-./examples/minimal/demo.sh
-
-# Skip wait times with `GOON`
-GOON=true ./examples/minimal/demo.sh
-
-# Export your code to stdout with `EXPORT` (defaults to sh)
-EXPORT=true ./examples/minimal/demo.sh
-
-# Export to sh
-EXPORT_FORMAT=sh ./examples/mimimal/demo.sh
-
-# Export to md
-EXPORT_FORMAT=md ./examples/mimimal/demo.sh
-
-# Rrun without printing with `QUIET`
-QUIET=true ./examples/minimal/demo.sh
-
-# Dry Run the demo with `DRYRUN`
-DRYRUN=true ./examples/minimal/demo.sh
-
-# Run with debug messages enabled (uses e)
-DEBUG=true ./example/minimal/demo.sh
-
-# Run debug messages only
-DEBUG=true QUIET=true ./example/minimal/demo.sh
-```
-
-## Usage with `./show` script (it's a bit buggy)
-
-```bash
-# Run demos with:
 ./show examples/minimal
-
-# Skip wait times with -y
-./show examples/minimal -y
-
-# Perform a dryrun
-./show examples/minimal --dryrun
-
-# Define and run clean steps with `--clean`
-./show examples/minimal --clean
-
-# Define and run offline setup for your demos with `--offline`
-./show examples/minimal --offline
-
-# Export your code to a bash file with `--export`
-./show examples/minimal --export
-
-# Export to different formats [sh/md]
-./show example/minimal --export sh
+# Equivalent to
+# bash -c 'source ./show; source./examples/minimal/demo.sh'
 ```
 
+Run a demo skipping all wait times with -y
 
-## Themes
+```bash
+./show examples/minimal -y
+# Equivalent to
+# bash -c 'source ./show; GOON=true source examples/minimal/demo.sh'
+```
+
+Perform a dryrun of the demo. All commands will be printed but not executed
+
+```bash
+./show examples/minimal --dryrun
+# Equivalent to
+# bash -c 'source ./show; DRYRUN=true source examples/minimal/demo.sh
+```
+
+Run a script quietly
+```bash
+./show examples/minimal --quiet
+# Equivalent to
+# bash -c 'source ./show; QUIET=true source examples/minimal/demo.sh
+```
+
+Define run clean steps with `--clean`. This will call and execute
+`examples/minimal/clean.sh`
+
+```bash
+./show examples/minimal --clean
+# Equivalent to
+# bash -c 'source ./show; source examples/minimal/clean.sh'
+```
+
+Define and run offline setup for your demos with `--offline`. This will
+call and execute `examples/minimal/offline.sh`
+```bash
+./show examples/minimal --offline
+# Equivalent to
+# bash -c 'source ./show; source examples/minimal/clean.sh'
+```
+
+Export your code to a bash file with `--export`. This way you can
+transform your `demo.sh` file to a convenient bash script or a writeup
+ready to be published in your blog.
+```bash
+./show examples/minimal --export sh
+./show examples/minimal --export md
+# Equivalent to
+# bash -c 'source ./show; EXPORT_FORMAT=sh source ./examples/mimimal/demo.sh'
+# bash -c 'source ./show; EXPORT_FORMAT=md source ./examples/mimimal/demo.sh'
+```
+
+### Source `show` in any bash script
+
+As said before, Showtime can be run equivalently by importing it at the
+top of your files. As a matter of fact, this script was intially thought
+to be run inside your demo, whether it's called `demo.sh` or with any
+other name.
+Later, it became more convenient to just use it as a command that would
+but you can still experiment with sourcing it and exploit its full power.
+
+### Demo
+
+[![asciicast](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz.svg)](https://asciinema.org/a/9TYkJ1coAkzbUucHj2a0nDGmz)
+
+### Write your first demo
+
+...
+
+Themes
+------
 
 You can customize colors and symbols by creating a `theme.sh` file in your demo directory. This file will be automatically loaded when your demo runs.
 
@@ -191,7 +225,10 @@ export S_BULLET="▶"                        # Bullet symbol (default: ➤)
 
 The theme system uses fallback values, so you only need to define the colors you want to change.
 
-## Tests
+Contribute
+----------
+
+### Tests
 
 Run all tests with [`bats`](https://github.com/bats-core/bats-core)
 
@@ -202,7 +239,8 @@ bats --tap tests/*
 
 ---
 
-## TODOs, ideas and issues
+TODOs, ideas and issues
+-----------------------
 
 - make skip header configurable
 - make messages configurable by user

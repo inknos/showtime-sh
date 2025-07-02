@@ -6,4 +6,4 @@ COPY show /bin/show
 
 RUN chmod +x /bin/show
 
-CMD ["/bin/show"]
+ENTRYPOINT ["/bin/show"]
