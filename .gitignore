@@ -1,1 +1,3 @@
 docs/build
+test/bats
+test/test_helper

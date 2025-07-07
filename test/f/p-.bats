@@ -16,7 +16,7 @@ setup() {
 
 @test "EXPORT=true p-" {
     EXPORT=true run p-
-    [ "$status" -eq 0 ]
+    (( status == 0 ))
     [[ "${lines[0]}" = "# ----------------------------------------" ]]
 }
 

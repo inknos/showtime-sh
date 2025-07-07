@@ -13,80 +13,80 @@ setup() {
 
 @test "_check_env" {
     run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "DEBUG=true _check_env" {
     DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "DRYRUN=true _check_env" {
     DRYRUN=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "EXPORT=true _check_env" {
     EXPORT=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "EXPORT_FORMAT=sh _check_env" {
     EXPORT_FORMAT=sh run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "EXPORT_FORMAT=invalid _check_env" {
     EXPORT_FORMAT=invalid run _check_env
-    [[ "$status" -eq 1 ]]
+    (( status == 1 ))
     [[ "${lines[0]}" = "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: 'invalid'" ]]
 }
 
 @test "QUIET=true _check_env" {
     QUIET=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "QUIET=true DRYRUN=true _check_env" {
     # QUIET: true
     # DRYRUN: true
     QUIET=true DRYRUN=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "QUIET=true EXPORT=true _check_env" {
     # QUIET: true
     # EXPORT: true
     QUIET=true EXPORT=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "QUIET=true DEBUG=true _check_env" {
     # QUIET: true
     # DEBUG: true
     QUIET=true DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "DRYRUN=true EXPORT=true _check_env" {
     # DRYRUN: true
     # EXPORT: true
     DRYRUN=true EXPORT=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "DRYRUN=true DEBUG=true _check_env" {
     # DRYRUN: true
     # DEBUG: true
     DRYRUN=true DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "EXPORT=true DEBUG=true _check_env" {
     # EXPORT: true
     # DEBUG: true
     EXPORT=true DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "QUIET=true DRYRUN=true EXPORT_FORMAT=sh _check_env" {
@@ -94,7 +94,7 @@ setup() {
     # DRYRUN: true
     # EXPORT_FORMAT: sh
     QUIET=true DRYRUN=true EXPORT_FORMAT=sh run _check_env
-    [[ "$status" -eq 1 ]]
+    (( status == 1 ))
     [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
     [[ "${lines[1]}" = "DEBUG: " ]]
     [[ "${lines[2]}" = "DRYRUN: true" ]]
@@ -108,7 +108,7 @@ setup() {
     # DRYRUN: true
     # EXPORT: true
     QUIET=true DRYRUN=true EXPORT=true run _check_env
-    [[ "$status" -eq 1 ]]
+    (( status == 1 ))
     [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
     [[ "${lines[1]}" = "DEBUG: " ]]
     [[ "${lines[2]}" = "DRYRUN: true" ]]
@@ -122,7 +122,7 @@ setup() {
     # DRYRUN: true
     # DEBUG: true
     QUIET=true DRYRUN=true DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 @test "DRYRUN=true EXPORT=true DEBUG=true _check_env" {
@@ -130,7 +130,7 @@ setup() {
     # EXPORT: true
     # DEBUG: true
     DRYRUN=true EXPORT=true DEBUG=true run _check_env
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
 }
 
 
@@ -140,7 +140,7 @@ setup() {
     # EXPORT: true
     # DEBUG: true
     QUIET=true DRYRUN=true EXPORT=true DEBUG=true run _check_env
-    [[ "$status" -eq 1 ]]
+    (( status == 1 ))
     [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
     [[ "${lines[1]}" = "DEBUG: true" ]]
     [[ "${lines[2]}" = "DRYRUN: true" ]]

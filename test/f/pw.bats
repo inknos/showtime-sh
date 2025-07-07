@@ -6,24 +6,24 @@ setup() {
 
 @test "pw \"test\"" {
     run pw 'test'
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
     [[ "${lines[0]}" = "${C_WARNING@E}${S_WARNING} test${NC@E}" ]]
 }
 
 @test "DRYRUN=true pw \"test\"" {
     DRYRUN=true run pw 'test'
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
     [[ "${lines[0]}" = "${C_WARNING@E}${S_WARNING} test${NC@E}" ]]
 }
 
 @test "EXPORT=true pw \"test\"" {
     EXPORT=true run pw 'test'
-    [[ "$status" -eq 0 ]]
+    (( status == 0 ))
     [[ "${lines[0]}" = "# WRN: test" ]]
 }
 
 @test "QUIET=true pw \"test\"" {
     QUIET=true run pw 'test'
-    [[ "$status" -eq 0 ]]
-    [[ "${#lines[@]}" -eq 0 ]]
+    (( status == 0 ))
+    (( ${#lines[@]} == 0 ))
 }

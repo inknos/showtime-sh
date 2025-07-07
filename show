@@ -631,7 +631,7 @@ et() {
         HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1"
     fi
     local exit_code=$?
-    if [[ $exit_code -eq 124 ]]; then
+    if (( exit_code == 124 )); then
         pw "Command timed out after ${timeout_duration} seconds"
     fi
 }
@@ -726,7 +726,7 @@ usage() {
 }
 
 # Check if at least one argument is provided
-if [[ $# -eq 0 ]]; then
+if (( $# == 0 )); then
     usage
 fi
 
