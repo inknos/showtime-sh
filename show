@@ -124,7 +124,7 @@ _export_intestation() {
 }
 
 # Global history file for demo commands
-DEMO_HISTFILE=$(mktemp)
+_demo_histfile=$(mktemp)
 
 _print_sigint_ctrl_c() {
     if [[ "$EXPORT" = "true" ]]; then
@@ -598,14 +598,14 @@ e() {
     fi
 
     # Append command to global history file
-    echo "$1" >> "$DEMO_HISTFILE"
+    echo "$1" >> "$_demo_histfile"
 
     if [[ "$QUIET" = "true" ]]; then  
         # run command and redirect its output to /dev/null
-        HISTFILE="$DEMO_HISTFILE" bash -c "$1" >/dev/null 2>&1
+        _histfile="$_demo_histfile" bash -c "$1" >/dev/null 2>&1
     else
-        # Execute with HISTFILE set
-        HISTFILE="$DEMO_HISTFILE" bash -c "$1"
+        # Execute with _histfile set
+        _histfile="$_demo_histfile" bash -c "$1"
     fi
     local exit_code=$?
     _print_newline
@@ -622,13 +622,13 @@ et() {
     local timeout_duration="${2:-30}"  # Default 30 seconds
 
     # Append command to global history file
-    echo "$1" >> "$DEMO_HISTFILE"
+    echo "$1" >> "$_demo_histfile"
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
+        _histfile="$_demo_histfile" timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
     else
-        HISTFILE="$DEMO_HISTFILE" timeout "$timeout_duration" bash -c "$1"
+        _histfile="$_demo_histfile" timeout "$timeout_duration" bash -c "$1"
     fi
     local exit_code=$?
     if (( exit_code == 124 )); then
@@ -640,9 +640,9 @@ ed() {
     _print_debug_short_separator
     _print_debug "$1"
     _print_debug_short_separator
-    echo "$1" >> "$DEMO_HISTFILE"
+    echo "$1" >> "$_demo_histfile"
 
-    HISTFILE="$DEMO_HISTFILE" bash -c "$1"
+    _histfile="$_demo_histfile" bash -c "$1"
     local exit_code=$?
     _print_newline
     return $exit_code
@@ -650,7 +650,7 @@ ed() {
 # Function to pause demo execution based on GOON variable
 w() {
     local timeout="$1"
-    
+
     if [[ "${GOON:-false}" = "true" ]]; then
         # If GOON is true, continue without pausing
         return
@@ -681,15 +681,15 @@ b() {
     elif [[ "$GOON" = "true" ]]; then
         : # do nothing
     else
-        if [[ -z "$DEMO_NAME" ]]; then
-            DEMO=demo
+        if [[ -z "$_demo_name" ]]; then
+            _demo='demo'
         else
-            DEMO=$DEMO_NAME
+            _demo=$_demo_name
         fi
-        HISTFILE="$DEMO_HISTFILE" PS1="\[${C_INTERACTIVE}\]($DEMO) \$ \[${NC}\]" bash --rcfile <(
+        _histfile="$_demo_histfile" PS1="\[${C_INTERACTIVE}\]($_demo) \$ \[${NC}\]" bash --rcfile <(
             echo "set +h"
-            echo "history -r '$DEMO_HISTFILE'"
-            echo "trap 'history -w \"$DEMO_HISTFILE\"' EXIT"
+            echo "history -r '$_demo_histfile'"
+            echo "trap 'history -w \"$_demo_histfile\"' EXIT"
             echo "# Load bash completion"
             echo "if [ -f /etc/bash_completion ]; then"
             echo "    . /etc/bash_completion"
@@ -778,7 +778,7 @@ while [[ : ]]; do
             ;;
         -o|--offline)
             OFFLINE=true
-            shift  
+            shift
             ;;
         -q|--quiet)
             QUIET=true
@@ -809,49 +809,49 @@ fi
 # ./show /examples/minimal
 # ./show ./examples/minimal
 #
-# will result in DEMO_NAME=examples/minimal
+# will result in _demo_name=examples/minimal
 #
 # TODO needs tests!
-DEMO_DIR=$1
-if [[ -z "$DEMO_DIR" ]] || [[ "$DEMO_DIR" = "" ]]; then
+_demo_dir=$1
+if [[ -z "$_demo_dir" ]] || [[ "$_demo_dir" = "" ]]; then
     echo "Please provide a demo name"
     usage
     exit 1
 fi
 
-DEMO_NAME=${DEMO_DIR%/}
-DEMO_NAME="${DEMO_NAME#./}"
-DEMO_NAME="${DEMO_NAME#/}"
+_demo_name=${_demo_dir%/}
+_demo_name="${_demo_name#./}"
+_demo_name="${_demo_name#/}"
 
 # Validate demo number
-# case $DEMO_NAME in
+# case $_demo_name in
 #     ansible|autocompletion|auto-update|compose|healthcheck|quadlet|auto-update-rollback)
 #         ;;
 #     *)
-#         echo "Error: Invalid demo name '$DEMO_NAME'"
+#         echo "Error: Invalid demo name '$_demo_name'"
 #         echo "Valid demos are: ansible, autocompletion, auto-update, auto-update-rollback compose, farm, healthckeck"
 #         exit 1
 #         ;;
 # esac
 
 # Check if demo directory exists
-if [[ ! -d "$DEMO_DIR" ]]; then
-    echo "Error: Demo directory '$DEMO_DIR' does not exist"
+if [[ ! -d "$_demo_dir" ]]; then
+    echo "Error: Demo directory '$_demo_dir' does not exist"
     exit 1
 fi
 
 # Load theme.sh from demo directory if it exists
-if [[ -f "$DEMO_DIR/theme.sh" ]]; then
-    source "$DEMO_DIR/theme.sh" 2>/dev/null || true
+if [[ -f "$_demo_dir/theme.sh" ]]; then
+    source "$_demo_dir/theme.sh" 2>/dev/null || true
 fi
 
 # Run all scripts in sequence
 if [[ "$CLEAN" = true ]]; then
     # Clean mode
-    CLEAN_SCRIPT="$DEMO_DIR/clean.sh"
+    CLEAN_SCRIPT="$_demo_dir/clean.sh"
     if [[ -f "$CLEAN_SCRIPT" ]]; then
         _export_intestation
-        cd "$DEMO_DIR" && source clean.sh
+        cd "$_demo_dir" && source clean.sh
         exit 0
     else
         echo "WRN: Clean script '$CLEAN_SCRIPT' not found"
@@ -860,10 +860,10 @@ if [[ "$CLEAN" = true ]]; then
 fi
 
 if [[ "$OFFLINE" = true ]]; then
-    OFFLINE_SCRIPT="$DEMO_DIR/offline.sh"
+    OFFLINE_SCRIPT="$_demo_dir/offline.sh"
     if [[ -f "$OFFLINE_SCRIPT" ]]; then
         _export_intestation
-        cd "$DEMO_DIR" && source offline.sh
+        cd "$_demo_dir" && source offline.sh
         exit 0
     else
         echo "WRN: Offline script '$OFFLINE_SCRIPT' not found"
@@ -871,15 +871,15 @@ if [[ "$OFFLINE" = true ]]; then
     fi
 fi
 
-DEMO_SCRIPT="$DEMO_DIR/demo.sh"
-if [[ -f "$DEMO_SCRIPT" ]]; then
+_demo_script="$_demo_dir/demo.sh"
+if [[ -f "$_demo_script" ]]; then
     _export_intestation
-    cd "$DEMO_DIR" && GOON="$GOON" \
+    cd "$_demo_dir" && GOON="$GOON" \
         EXPORT="$EXPORT" \
-        DEMO_NAME="$DEMO_NAME" \
+        _demo_name="$_demo_name" \
         source demo.sh
 else
-    echo "WRN: Demo script '$DEMO_SCRIPT' not found"
+    echo "WRN: Demo script '$_demo_script' not found"
     exit 1
 fi
 
