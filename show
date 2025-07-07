@@ -4,68 +4,68 @@
 # Source this file in other scripts with: source "$(dirname "$0")/colors.sh"
 
 # FG Colors
-_FG_BLACK='\033[0;30m'
-_FG_RED='\033[0;31m'
-_FG_GREEN='\033[0;32m'
-_FG_YELLOW='\033[0;33m'
-_FG_BLUE='\033[0;34m'
-_FG_MAGENTA='\033[0;35m'
-_FG_CYAN='\033[0;36m'
-_FG_WHITE='\033[0;37m'
-_FG_BRIGHT_BLACK='\033[0;90m'
-_FG_BRIGHT_RED='\033[0;91m'
-_FG_BRIGHT_GREEN='\033[0;92m'
-_FG_BRIGHT_YELLOW='\033[0;93m'
-_FG_BRIGHT_BLUE='\033[0;94m'
-_FG_BRIGHT_MAGENTA='\033[0;95m'
-_FG_BRIGHT_CYAN='\033[0;96m'
-_FG_BRIGHT_WHITE='\033[0;97m'
+_fg_black='\033[0;30m'
+_fg_red='\033[0;31m'
+_fg_green='\033[0;32m'
+_fg_yellow='\033[0;33m'
+_fg_blue='\033[0;34m'
+_fg_magenta='\033[0;35m'
+_fg_cyan='\033[0;36m'
+_fg_white='\033[0;37m'
+_fg_bright_black='\033[0;90m'
+_fg_bright_red='\033[0;91m'
+_fg_bright_green='\033[0;92m'
+_fg_bright_yellow='\033[0;93m'
+_fg_bright_blue='\033[0;94m'
+_fg_bright_magenta='\033[0;95m'
+_fg_bright_cyan='\033[0;96m'
+_fg_bright_white='\033[0;97m'
 
 #BG Colors
-_BG_BLACK='\033[0;40m'
-_BG_RED='\033[0;41m'
-_BG_GREEN='\033[0;42m'
-_BG_YELLOW='\033[0;43m'
-_BG_BLUE='\033[0;44m'
-_BG_MAGENTA='\033[0;45m'
-_BG_CYAN='\033[0;46m'
-_BG_WHITE='\033[0;47m'
-_BG_BRIGHT_BLACK='\033[0;100m'
-_BG_BRIGHT_RED='\033[0;101m'
-_BG_BRIGHT_GREEN='\033[0;102m'
-_BG_BRIGHT_YELLOW='\033[0;103m'
-_BG_BRIGHT_BLUE='\033[0;104m'
-_BG_BRIGHT_MAGENTA='\033[0;105m'
-_BG_BRIGHT_CYAN='\033[0;106m'
-_BG_BRIGHT_WHITE='\033[0;107m'
+_bg_black='\033[0;40m'
+_bg_red='\033[0;41m'
+_bg_green='\033[0;42m'
+_bg_yellow='\033[0;43m'
+_bg_blue='\033[0;44m'
+_bg_magenta='\033[0;45m'
+_bg_cyan='\033[0;46m'
+_bg_white='\033[0;47m'
+_bg_bright_black='\033[0;100m'
+_bg_bright_red='\033[0;101m'
+_bg_bright_green='\033[0;102m'
+_bg_bright_yellow='\033[0;103m'
+_bg_bright_blue='\033[0;104m'
+_bg_bright_magenta='\033[0;105m'
+_bg_bright_cyan='\033[0;106m'
+_bg_bright_white='\033[0;107m'
 
 # Text styles
-_BOLD='\033[1m'
-_DIM='\033[2m'
-_ITALIC='\033[3m'
-_UNDERLINE='\033[4m'
-_BLINK='\033[5m'
-_REVERSE='\033[7m'
+_bold='\033[1m'
+_dim='\033[2m'
+_italic='\033[3m'
+_underline='\033[4m'
+_blink='\033[5m'
+_reverse='\033[7m'
 
 # No Color
 NC='\033[0m'
 
 # Semantic color definitions (configurable)
-C_HEADER=${C_HEADER:-$_FG_CYAN}
-C_HEADER_TEXT=${C_HEADER_TEXT:-$_FG_WHITE$_BOLD}
-C_SUCCESS=${C_SUCCESS:-$_FG_GREEN}
-C_ERROR=${C_ERROR:-$_FG_RED}
-C_WARNING=${C_WARNING:-$_FG_YELLOW}
-C_INFO=${C_INFO:-$_FG_BLUE}
-C_DEBUG=${C_DEBUG:-$_FG_PURPLE}
-C_COMMAND=${C_COMMAND:-$_FG_RED}
-C_COMMAND_TEXT=${C_COMMAND_TEXT:-$_FG_WHITE}
-C_DEBUG_TEXT=${C_DEBUG_TEXT:-$_FG_GREY$_ITALIC}
-C_TEXT=${C_TEXT:-$_FG_YELLOW}
-C_BULLET=${C_BULLET:-$_FG_GREEN}
-C_PROMPT=${C_PROMPT:-$_DIM$_FG_CYAN}
-C_INTERACTIVE=${C_INTERACTIVE:-$_FG_PURPLE}
-C_SEPARATOR=${C_SEPARATOR:-$_DIM$_FG_CYAN}
+C_HEADER=${C_HEADER:-$_fg_cyan}
+C_HEADER_TEXT=${C_HEADER_TEXT:-$_fg_white$_bold}
+C_SUCCESS=${C_SUCCESS:-$_fg_green}
+C_ERROR=${C_ERROR:-$_fg_red}
+C_WARNING=${C_WARNING:-$_fg_yellow}
+C_INFO=${C_INFO:-$_fg_blue}
+C_DEBUG=${C_DEBUG:-$_fg_purple}
+C_COMMAND=${C_COMMAND:-$_fg_red}
+C_COMMAND_TEXT=${C_COMMAND_TEXT:-$_fg_white}
+C_DEBUG_TEXT=${C_DEBUG_TEXT:-$_fg_grey$_italic}
+C_TEXT=${C_TEXT:-$_fg_yellow}
+C_BULLET=${C_BULLET:-$_fg_green}
+C_PROMPT=${C_PROMPT:-$_dim$_fg_cyan}
+C_INTERACTIVE=${C_INTERACTIVE:-$_fg_purple}
+C_SEPARATOR=${C_SEPARATOR:-$_dim$_fg_cyan}
 
 # Configurable symbols
 S_BULLET=${S_BULLET:-"➤"}
