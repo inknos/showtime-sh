@@ -8,7 +8,7 @@ setup() {
     bats_require_minimum_version 1.5.0
     run -142 w 0.1
     [[ "$status" -eq 142 ]]
-    [[ "${lines[0]}" = *"Press Enter to continue..."* ]]
+    [[ "${lines[0]}" = "${C_PROMPT@E}Press Enter to continue...${NC@E}" ]]
 }
 
 @test "w with timeout and GOON=true" {

@@ -7,13 +7,13 @@ setup() {
 @test "_print_exiting_bash" {
     run _print_exiting_bash
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" == *"Exiting bash"* ]]
+    [[ "${lines[0]}" = "${C_INTERACTIVE@E}Exiting bash...${NC@E}" ]]
 }
 
 @test "DRYRUN=true _print_exiting_bash" {
     DRYRUN=true run _print_exiting_bash
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"Exiting bash"* ]]
+    [[ "${lines[0]}" = "${C_INTERACTIVE@E}Exiting bash...${NC@E}" ]]
 }
 
 @test "EXPORT=true _print_exiting_bash" {

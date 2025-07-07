@@ -13,5 +13,5 @@ setup() {
 @test "DEBUG=true _print_debug_short_separator" {
     DEBUG=true run _print_debug_short_separator
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" == *"---"* ]]
+    [[ "${lines[0]}" = "${C_DEBUG@E}---${NC@E}" ]]
 } 

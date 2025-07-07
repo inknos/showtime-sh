@@ -7,13 +7,13 @@ setup() {
 @test "pw \"test\"" {
     run pw 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_WARNING}"*"WRN: test"* ]]
+    [[ "${lines[0]}" = "${C_WARNING@E}${S_WARNING} test${NC@E}" ]]
 }
 
 @test "DRYRUN=true pw \"test\"" {
     DRYRUN=true run pw 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_WARNING}"*"WRN: test"* ]]
+    [[ "${lines[0]}" = "${C_WARNING@E}${S_WARNING} test${NC@E}" ]]
 }
 
 @test "EXPORT=true pw \"test\"" {

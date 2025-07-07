@@ -7,13 +7,13 @@ setup() {
 @test "_print_press_enter_to_continue" {
     run _print_press_enter_to_continue
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" == *"Press Enter to continue"* ]]
+    [[ "${lines[0]}" == "${C_PROMPT@E}Press Enter to continue...${NC@E}" ]]
 }
 
 @test "DRY_RUN=true _print_press_enter_to_continue" {
     DRY_RUN=true run _print_press_enter_to_continue
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" == *"Press Enter to continue"* ]]
+    [[ "${lines[0]}" == "${C_PROMPT@E}Press Enter to continue...${NC@E}" ]]
 }
 
 @test "EXPORT=true _print_press_enter_to_continue" {

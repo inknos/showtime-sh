@@ -11,21 +11,21 @@ teardown() {
 @test "e \"echo test\"" {
     run e "echo test"
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"$"*"echo test"* ]]
-    [[ "${lines[1]}" = *"test"* ]]
+    [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}echo test${NC@E}" ]]
+    [[ "${lines[1]}" = "test" ]]
 }
 
 @test "DEBUG=true e \"echo test\"" {
     DEBUG=true run e "echo test"
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"$"*"echo test"* ]]
-    [[ "${lines[1]}" = *"test"* ]]
+    [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}echo test${NC@E}" ]]
+    [[ "${lines[1]}" = "test" ]]
 }
 
 @test "DRYRUN=true e \"echo test\"" {
     DRYRUN=true run e "echo test"
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"$"*"echo test"* ]]
+    [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}echo test${NC@E}" ]]
     [[ "${#lines[@]}" -eq 1 ]]
 }
 
@@ -33,7 +33,7 @@ teardown() {
 @test "DRYRUN=true e \"echo test\ > test.txt" {
     DRYRUN=true run e "echo test > test.txt"
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"echo test > test.txt"* ]]
+    [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}echo test > test.txt${NC@E}" ]]
     [[ ! -f "test.txt" ]]
 }
 
@@ -42,7 +42,7 @@ teardown() {
 @test "DRYRUN=true e \"nonsense\"" {
     DRYRUN=true run e "nonsense"
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"$"*"nonsense"* ]]
+    [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}nonsense${NC@E}" ]]
 }
 
 @test "EXPORT=true e \"echo test\"" {

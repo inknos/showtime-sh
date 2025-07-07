@@ -8,13 +8,13 @@ setup() {
 @test "pi \"test\"" {
     run pi 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_INFO}"*"INF: test"* ]]
+    [[ "${lines[0]}" = "${C_INFO@E}${S_INFO} test${NC@E}" ]]
 }
 
 @test "DRYRUN=true pi \"test\"" {
     DRYRUN=true run pi 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_INFO}"*"INF: test"* ]]
+    [[ "${lines[0]}" = "${C_INFO@E}${S_INFO} test${NC@E}" ]]
 }
 
 @test "EXPORT=true pi \"test\"" {

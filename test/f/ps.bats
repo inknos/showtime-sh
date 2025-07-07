@@ -7,13 +7,13 @@ setup() {
 @test "ps \"test\"" {
     run ps 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_SUCCESS}"*"test"* ]]
+    [[ "${lines[0]}" = "${C_SUCCESS@E}${S_SUCCESS} test${NC@E}" ]]
 }
 
 @test "DRYRUN=true ps \"test\"" {
     DRYRUN=true run ps 'test'
     [[ "$status" -eq 0 ]]
-    [[ "${lines[0]}" = *"${S_SUCCESS}"*"test"* ]]
+    [[ "${lines[0]}" = "${C_SUCCESS@E}${S_SUCCESS} test${NC@E}" ]]
 }
 
 @test "EXPORT=true ps \"test\"" {

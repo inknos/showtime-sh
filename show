@@ -47,6 +47,7 @@ _UNDERLINE='\033[4m'
 _BLINK='\033[5m'
 _REVERSE='\033[7m'
 
+# No Color
 NC='\033[0m'
 
 # Semantic color definitions (configurable)
@@ -161,7 +162,7 @@ _print_press_enter_to_continue() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "${DIM}${CYAN}Press Enter to continue...${NC}"
+        echo -e "${C_PROMPT}Press Enter to continue...${NC}"
     fi
 }
 
@@ -254,7 +255,7 @@ _print_success() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_SUCCESS}${S_SUCCESS}${NC} ${C_HEADER_TEXT}$@${NC}\n"
+        echo -e "\n${C_SUCCESS}${S_SUCCESS} $@${NC}\n"
     fi
 }
 
@@ -272,7 +273,7 @@ _print_error() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_ERROR}${S_ERROR}${NC} ${C_HEADER_TEXT}ERR: $@${NC}\n"
+        echo -e "\n${C_ERROR}${S_ERROR} $@${NC}\n"
     fi
 }
 
@@ -290,7 +291,7 @@ _print_warning() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_WARNING}${S_WARNING}${NC} ${C_HEADER_TEXT}WRN: $@${NC}\n"
+        echo -e "\n${C_WARNING}${S_WARNING} $@${NC}\n"
     fi
 }
 
@@ -308,7 +309,7 @@ _print_info() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "${C_INFO}${S_INFO}${NC} ${C_COMMAND_TEXT}INF: $@${NC}"
+        echo -e "${C_INFO}${S_INFO} $@${NC}"
     fi
 }
 
@@ -580,7 +581,7 @@ pi() {
 
 # Function to print section separators
 p-() {
-    _print_separator "$@"
+    _print_separator
 }
 
 # Function to print command in red and execute it
