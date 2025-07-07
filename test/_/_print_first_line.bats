@@ -10,42 +10,44 @@ setup() {
 
 @test "_print_first_line" {
     run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
+    # shellcheck disable=SC2153
     [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test message${NC@E}" ]]
 }
 
 @test "_print_first_line with custom symbol" {
     S_BULLET=">" run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "${C_BULLET@E}>${NC@E} ${C_TEXT@E}test message${NC@E}" ]]
 }
 
 @test "DRYRUN=true _print_first_line" {
     DRYRUN=true run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
+    # shellcheck disable=SC2153 # {C,S}_BULLET are confused and not found
     [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test message${NC@E}" ]]
 }
 
 @test "DRYRUN=true _print_first_line with custom symbol" {
     DRYRUN=true S_BULLET=">" run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "${C_BULLET@E}>${NC@E} ${C_TEXT@E}test message${NC@E}" ]]
 }
 
 @test "EXPORT=true _print_first_line" {
     EXPORT=true run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "# test message" ]]
 }
 
 @test "EXPORT=true _print_first_line with custom symbol does not change the symbol" {
     EXPORT=true S_BULLET=">" run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "# test message" ]]
 }
 
 @test "QUIET=true _print_first_line" {
     QUIET=true run _print_first_line 'test message'
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "" ]]
-} 
+}

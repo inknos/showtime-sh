@@ -15,4 +15,3 @@ documentation for details.
    show.1
    :maxdepth: 2
    :caption: Contents:
-

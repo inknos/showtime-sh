@@ -189,7 +189,7 @@ HEADERS
 :   Print a single header 3 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
     .. code-block:: bash
-    
+
         bash -c 'source /bin/show; EXPORT_FORMAT=md h3 "Header 3"'
 
         ### Header 3
@@ -200,7 +200,7 @@ HEADERS
 :   Print a single header 4 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
     .. code-block:: bash
-    
+
         bash -c 'source /bin/show; EXPORT_FORMAT=md h4 "Header 4"'
 
         #### Header 4
@@ -211,7 +211,7 @@ HEADERS
 :   Print a single header 5 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
     .. code-block:: bash
-    
+
         bash -c 'source /bin/show; EXPORT_FORMAT=md h5 "Header 5"'
 
         ##### Header 5
@@ -222,7 +222,7 @@ HEADERS
 :   Print a single header 6 and do not clear output. Refer to :ref:`h1 <show-functions-headers-h1>` for more information.
 
     .. code-block:: bash
-    
+
         bash -c 'source /bin/show; EXPORT_FORMAT=md h6 "Header 6"'
 
         ##### Header 6
@@ -521,6 +521,6 @@ but to run your code by invoking the :ref:`run <show-cli-options>` command.
 
 **QUIET**
 :   If *true*, disables all output
-    
+
     Set *GOON=true*
 

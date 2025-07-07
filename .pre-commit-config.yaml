@@ -10,7 +10,7 @@ repos:
   - id: check-added-large-files
   - id: detect-private-key
   - id: check-executables-have-shebangs
-- repo: https://github.com/openstack/bashate
-  rev: 2.1.1
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.10.0.1
   hooks:
-  - id: bashate
+  - id: shellcheck

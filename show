@@ -78,7 +78,7 @@ S_ERROR=${S_ERROR:-"✗"}
 S_DEBUG=${S_DEBUG:-"$"}
 S_COMMAND=${S_COMMAND:-"$"}
 
-debug_info() {
+_debug_info() {
     echo "DEBUG: $DEBUG"
     echo "DRYRUN: $DRYRUN"
     echo "EXPORT: $EXPORT"
@@ -93,7 +93,7 @@ _check_env() {
            "$EXPORT_FORMAT" != "md" ]]; then
             echo "ERROR: EXPORT_FORMAT must be 'sh' \
 or 'md', got: '$EXPORT_FORMAT'"
-            debug_info
+            _debug_info
             exit 1
         fi
         EXPORT=true
@@ -105,7 +105,7 @@ or 'md', got: '$EXPORT_FORMAT'"
        "$QUIET" = "true" && \
        "$DRYRUN" = "true" ]]; then
         echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
-        debug_info
+        _debug_info
         exit 1
     fi
 }
@@ -186,7 +186,7 @@ _print_header() {
         # the first argument is the header level and it's internal only
         shift
         echo -e "${C_HEADER}========================================${NC}"
-        echo -e "${C_HEADER_TEXT}$@${NC}"
+        echo -e "${C_HEADER_TEXT}$*${NC}"
         echo -e "${C_HEADER}========================================${NC}\n"
     fi
 }
@@ -205,7 +205,7 @@ _print_first_line() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$@${NC}"
+        echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$*${NC}"
     fi
 }
 
@@ -224,7 +224,7 @@ _print_line() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "  ${C_TEXT}$@${NC}"
+        echo -e "  ${C_TEXT}$*${NC}"
     fi
 }
 
@@ -262,61 +262,61 @@ _print_success() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_SUCCESS}${S_SUCCESS} $@${NC}\n"
+        echo -e "\n${C_SUCCESS}${S_SUCCESS} $*${NC}\n"
     fi
 }
 
 _print_error() {
     if [[ "$EXPORT" = "true" ]]; then
         if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "ERR: $@"
+            _export_sh_comment "ERR: $*"
         elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "ERR: $@"
+            _export_sh_comment "ERR: $*"
         elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "ERR: $@"
+            _export_md_comment "ERR: $*"
         else
-            _export_sh_comment "ERR: $@"
+            _export_sh_comment "ERR: $*"
         fi
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_ERROR}${S_ERROR} $@${NC}\n"
+        echo -e "\n${C_ERROR}${S_ERROR} $*${NC}\n"
     fi
 }
 
 _print_warning() {
     if [[ "$EXPORT" = "true" ]]; then
         if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "WRN: $@"
+            _export_sh_comment "WRN: $*"
         elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "WRN: $@"
+            _export_sh_comment "WRN: $*"
         elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "WRN: $@"
+            _export_md_comment "WRN: $*"
         else
-            _export_sh_comment "WRN: $@"
+            _export_sh_comment "WRN: $*"
         fi
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_WARNING}${S_WARNING} $@${NC}\n"
+        echo -e "\n${C_WARNING}${S_WARNING} $*${NC}\n"
     fi
 }
 
 _print_info() {
     if [[ "$EXPORT" = "true" ]]; then
         if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "INF: $@"
+            _export_sh_comment "INF: $*"
         elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "INF: $@"
+            _export_sh_comment "INF: $*"
         elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "INF: $@"
+            _export_md_comment "INF: $*"
         else
-            _export_sh_comment "INF: $@"
+            _export_sh_comment "INF: $*"
         fi
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "${C_INFO}${S_INFO} $@${NC}"
+        echo -e "${C_INFO}${S_INFO} $*${NC}"
     fi
 }
 
@@ -373,13 +373,13 @@ _print_command() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "${C_COMMAND}${S_COMMAND}${NC} ${C_COMMAND_TEXT}$@${NC}"
+        echo -e "${C_COMMAND}${S_COMMAND}${NC} ${C_COMMAND_TEXT}$*${NC}"
     fi
 }
 
 _print_debug() {
     if [[ "$DEBUG" = "true" ]]; then
-        echo -e "${C_DEBUG}${S_DEBUG}${NC} ${C_DEBUG_TEXT}$@${NC}"
+        echo -e "${C_DEBUG}${S_DEBUG}${NC} ${C_DEBUG_TEXT}$*${NC}"
     fi
 }
 
@@ -408,7 +408,7 @@ _export_md_comment() {
     # Example:
     # _export_md_comment "This is a comment"
     # # This is a comment
-    echo "$@" | fold -s -w 78
+    echo "$*" | fold -s -w 78
 }
 
 _export_md_command() {
@@ -420,7 +420,7 @@ _export_md_command() {
     # echo 'This is a command'
     # ```
     echo "\`\`\`bash"
-    echo "$@"
+    echo "$*"
     echo "\`\`\`"
     echo
 }
@@ -436,7 +436,7 @@ _export_md_header() {
     done
     echo -n " "
     shift
-    echo "$@"
+    echo "$*"
     echo
 }
 
@@ -447,7 +447,7 @@ _export_sh_comment() {
     # Example:
     # _export_sh_comment "This is a comment"
     # # This is a comment
-    echo "$@" | fold -s -w 78 | sed 's/^/# /'
+    echo "$*" | fold -s -w 78 | sed 's/^/# /'
 }
 
 _export_sh_command() {
@@ -456,7 +456,7 @@ _export_sh_command() {
     # Example:
     # _export_sh_command "echo 'This is a command"
     # echo 'This is a command'
-    echo "$@"
+    echo "$*"
     echo
 }
 
@@ -558,10 +558,10 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [[ "$first_line" = true ]]; then
-            _print_first_line $line
+            _print_first_line "$( echo "$line" | xargs )"
             first_line=false
         else
-            _print_line $line
+            _print_line "$line"
         fi
     done
     _print_newline
@@ -600,7 +600,7 @@ e() {
     # if QUIET is true, do not print the command but still run it
     # if DRYRUN is true, print the command do not run it
     # _print_command will understand the EXPORT, QUIET, and DRYRUN vars
-    _print_command $1
+    _print_command "$1"
     if [[ "$EXPORT" = "true" ]] || [[ "$DRYRUN" = "true" ]]; then
         return
     fi
@@ -622,7 +622,7 @@ e() {
 
 # Function to print command in red and execute it with timeout
 et() {
-    _print_command $1
+    _print_command "$1"
     if [[ "$EXPORT" = "true" ]] || [[ "$DRYRUN" = "true" ]]; then
         return
     fi
@@ -635,7 +635,7 @@ et() {
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
         _histfile="$_demo_histfile" \
-            timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
+            timeout "$timeout_duration" bash -c "$1" 2>&1 /dev/null
     else
         _histfile="$_demo_histfile" \
             timeout "$timeout_duration" bash -c "$1"
@@ -743,26 +743,25 @@ if (( $# == 0 )); then
 fi
 
 # Initialize GOON variable
-GOON={$GOON:-false}
-OFFLINE={$OFFLINE:-false}
-QUIET={$QUIET:-false}
-EXPORT={$EXPORT:-}
-EXPORT_FORMAT={$EXPORT_FORMAT:-}
-DRYRUN={$DRYRUN:-false}
-CLEAN={$CLEAN:-false}
+GOON=${GOON:-false}
+OFFLINE=${OFFLINE:-false}
+QUIET=${QUIET:-false}
+EXPORT=${EXPORT:-}
+EXPORT_FORMAT=${EXPORT_FORMAT:-}
+DRYRUN=${DRYRUN:-false}
+CLEAN=${CLEAN:-false}
 
 
-VALID_ARGS=$(
+if ! VALID_ARGS=$(
     getopt -o cde:hqoy \
         --long clean,dryrun,export:,goon,help,offline,quiet -- "$@")
-
-if [[ $? -ne 0 ]]; then
+then
     echo "Error: Invalid arguments"
     usage
 fi
 
 eval set -- "$VALID_ARGS"
-while [[ : ]]; do
+while true; do
     case "$1" in
         -c|--clean)
             CLEAN=true
@@ -783,12 +782,10 @@ while [[ : ]]; do
                 shift 2
             else
                 usage
-                shift
             fi
             ;;
         -h|--help)
             usage
-            shift
             ;;
         -o|--offline)
             OFFLINE=true
@@ -830,7 +827,6 @@ _demo_dir=$1
 if [[ -z "$_demo_dir" ]] || [[ "$_demo_dir" = "" ]]; then
     echo "Please provide a demo name"
     usage
-    exit 1
 fi
 
 _demo_name=${_demo_dir%/}
@@ -856,6 +852,7 @@ fi
 
 # Load theme.sh from demo directory if it exists
 if [[ -f "$_demo_dir/theme.sh" ]]; then
+    # shellcheck source=/dev/null
     source "$_demo_dir/theme.sh" 2>/dev/null || true
 fi
 
@@ -865,7 +862,9 @@ if [[ "$CLEAN" = true ]]; then
     CLEAN_SCRIPT="$_demo_dir/clean.sh"
     if [[ -f "$CLEAN_SCRIPT" ]]; then
         _export_intestation
-        cd "$_demo_dir" && source clean.sh
+        cd "$_demo_dir" || exit 1
+        # shellcheck source=/dev/null
+        source clean.sh
         exit 0
     else
         echo "WRN: Clean script '$CLEAN_SCRIPT' not found"
@@ -877,7 +876,9 @@ if [[ "$OFFLINE" = true ]]; then
     OFFLINE_SCRIPT="$_demo_dir/offline.sh"
     if [[ -f "$OFFLINE_SCRIPT" ]]; then
         _export_intestation
-        cd "$_demo_dir" && source offline.sh
+        cd "$_demo_dir" || exit 1
+        # shellcheck source=/dev/null
+        source offline.sh
         exit 0
     else
         echo "WRN: Offline script '$OFFLINE_SCRIPT' not found"
@@ -888,10 +889,13 @@ fi
 _demo_script="$_demo_dir/demo.sh"
 if [[ -f "$_demo_script" ]]; then
     _export_intestation
-    cd "$_demo_dir" && GOON="$GOON" \
-        EXPORT="$EXPORT" \
-        _demo_name="$_demo_name" \
+    cd "$_demo_dir" || exit 1
+    # shellcheck source=/dev/null
+    GOON="$GOON" \
+    EXPORT="$EXPORT" \
+    _demo_name="$_demo_name" \
         source demo.sh
+    exit 0
 else
     echo "WRN: Demo script '$_demo_script' not found"
     exit 1

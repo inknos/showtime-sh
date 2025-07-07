@@ -16,7 +16,7 @@ setup() {
 
 @test "EXPORT=true p-" {
     EXPORT=true run p-
-    (( status == 0 ))
+    _=$(( status == 0 ))
     [[ "${lines[0]}" = "# ----------------------------------------" ]]
 }
 
@@ -24,4 +24,3 @@ setup() {
     result="$(QUIET=true p-)"
     [[ "$result" = "" ]]
 }
-
