@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Shared color definitions and utility functions for demo scripts
 # Source this file in other scripts with: source "$(dirname "$0")/colors.sh"
 
+# https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 # FG Colors
 _fg_black='\033[0;30m'
 _fg_red='\033[0;31m'
@@ -13,6 +14,7 @@ _fg_magenta='\033[0;35m'
 _fg_cyan='\033[0;36m'
 _fg_white='\033[0;37m'
 _fg_bright_black='\033[0;90m'
+_fg_gray=$_fg_bright_black
 _fg_bright_red='\033[0;91m'
 _fg_bright_green='\033[0;92m'
 _fg_bright_yellow='\033[0;93m'
@@ -57,14 +59,14 @@ C_SUCCESS=${C_SUCCESS:-$_fg_green}
 C_ERROR=${C_ERROR:-$_fg_red}
 C_WARNING=${C_WARNING:-$_fg_yellow}
 C_INFO=${C_INFO:-$_fg_blue}
-C_DEBUG=${C_DEBUG:-$_fg_purple}
+C_DEBUG=${C_DEBUG:-$_fg_magenta}
 C_COMMAND=${C_COMMAND:-$_fg_red}
 C_COMMAND_TEXT=${C_COMMAND_TEXT:-$_fg_white}
-C_DEBUG_TEXT=${C_DEBUG_TEXT:-$_fg_grey$_italic}
+C_DEBUG_TEXT=${C_DEBUG_TEXT:-$_fg_gray$_italic}
 C_TEXT=${C_TEXT:-$_fg_yellow}
 C_BULLET=${C_BULLET:-$_fg_green}
 C_PROMPT=${C_PROMPT:-$_dim$_fg_cyan}
-C_INTERACTIVE=${C_INTERACTIVE:-$_fg_purple}
+C_INTERACTIVE=${C_INTERACTIVE:-$_fg_magenta}
 C_SEPARATOR=${C_SEPARATOR:-$_dim$_fg_cyan}
 
 # Configurable symbols
@@ -87,8 +89,10 @@ debug_info() {
 _check_env() {
     if [[ "$EXPORT_FORMAT" != "" ]]; then
         # Validate EXPORT_FORMAT has valid values
-        if [[ "$EXPORT_FORMAT" != "sh" ]] && [[ "$EXPORT_FORMAT" != "md" ]]; then
-            echo "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: '$EXPORT_FORMAT'"
+        if [[ "$EXPORT_FORMAT" != "sh" && \
+           "$EXPORT_FORMAT" != "md" ]]; then
+            echo "ERROR: EXPORT_FORMAT must be 'sh' \
+or 'md', got: '$EXPORT_FORMAT'"
             debug_info
             exit 1
         fi
@@ -97,7 +101,9 @@ _check_env() {
 
     # EXPORT can't be set with QUIET and DRYRUN
     # exit if set together
-    if [[ "$EXPORT" = "true" ]] && [[ "$QUIET" = "true" ]] && [[ "$DRYRUN" = "true" ]]; then
+    if [[ "$EXPORT" = "true" && \
+       "$QUIET" = "true" && \
+       "$DRYRUN" = "true" ]]; then
         echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
         debug_info
         exit 1
@@ -132,7 +138,8 @@ _print_sigint_ctrl_c() {
     elif [[ "$QUIET" = "true" ]]; then
         _export_sh_noop
     else
-        echo -e "\n${C_INTERACTIVE}Ctrl+C detected - press Ctrl+C again within 2 seconds to exit demo${NC}"
+        echo -e "\n${C_INTERACTIVE}Ctrl+C detected \
+- press Ctrl+C again within 2 seconds to exit demo${NC}"
     fi
 }
 
@@ -381,7 +388,8 @@ handle_sigint() {
     _print_sigint_ctrl_c
 
     # Temporarily change trap to exit on second Ctrl+C
-    trap 'echo -e "\n${C_ERROR}Double Ctrl+C - exiting demo${NC}"; exit 130' SIGINT
+    trap 'echo -e "\n${C_ERROR}Double Ctrl+C \
+- exiting demo${NC}"; exit 130' SIGINT
 
     # Wait 2 seconds for second Ctrl+C, then enter interactive mode
     sleep 2
@@ -541,7 +549,7 @@ hhhhhh() {
 
 
 # print a debug message
-d() { 
+d() {
     _print_debug "$@"
 }
 
@@ -600,7 +608,7 @@ e() {
     # Append command to global history file
     echo "$1" >> "$_demo_histfile"
 
-    if [[ "$QUIET" = "true" ]]; then  
+    if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
         _histfile="$_demo_histfile" bash -c "$1" >/dev/null 2>&1
     else
@@ -626,9 +634,11 @@ et() {
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        _histfile="$_demo_histfile" timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
+        _histfile="$_demo_histfile" \
+            timeout "$timeout_duration" bash -c "$1" 2>&1 >/dev/null
     else
-        _histfile="$_demo_histfile" timeout "$timeout_duration" bash -c "$1"
+        _histfile="$_demo_histfile" \
+            timeout "$timeout_duration" bash -c "$1"
     fi
     local exit_code=$?
     if (( exit_code == 124 )); then
@@ -686,7 +696,9 @@ b() {
         else
             _demo=$_demo_name
         fi
-        _histfile="$_demo_histfile" PS1="\[${C_INTERACTIVE}\]($_demo) \$ \[${NC}\]" bash --rcfile <(
+        _histfile="$_demo_histfile" \
+            PS1="\[\[${C_INTERACTIVE}\]($_demo) \$ \[${NC}\]\]" \
+            bash --rcfile <(
             echo "set +h"
             echo "history -r '$_demo_histfile'"
             echo "trap 'history -w \"$_demo_histfile\"' EXIT"
@@ -740,7 +752,9 @@ DRYRUN={$DRYRUN:-false}
 CLEAN={$CLEAN:-false}
 
 
-VALID_ARGS=$(getopt -o cde:hqoy --long clean,dryrun,export:,goon,help,offline,quiet -- "$@")
+VALID_ARGS=$(
+    getopt -o cde:hqoy \
+        --long clean,dryrun,export:,goon,help,offline,quiet -- "$@")
 
 if [[ $? -ne 0 ]]; then
     echo "Error: Invalid arguments"
@@ -884,3 +898,4 @@ else
 fi
 
 fi # BASH_SOURCE
+
