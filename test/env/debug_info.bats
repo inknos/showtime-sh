@@ -6,7 +6,7 @@ setup() {
 
 @test "debug_info" {
     run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
@@ -16,7 +16,7 @@ setup() {
 
 @test "debug_info with QUIET=true" {
     QUIET=true run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
@@ -26,7 +26,7 @@ setup() {
 
 @test "debug_info with DRYRUN=true" {
     DRYRUN=true run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: true" ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
@@ -36,7 +36,7 @@ setup() {
 
 @test "debug_info with EXPORT=true" {
     EXPORT=true run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: true" ]]
@@ -46,7 +46,7 @@ setup() {
 
 @test "debug_info with DEBUG=true" {
     DEBUG=true run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: true" ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
@@ -56,7 +56,7 @@ setup() {
 
 @test "debug info with EXPORT_FORMAT=sh" {
     EXPORT_FORMAT=sh run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: " ]]
     [[ "${lines[1]}" = "DRYRUN: " ]]
     [[ "${lines[2]}" = "EXPORT: " ]]
@@ -66,7 +66,7 @@ setup() {
 
 @test "debug_info with all set to true" {
     QUIET=true DEBUG=true DRYRUN=true EXPORT=true run debug_info
-    [ "$status" -eq 0 ]
+    [[ "$status" -eq 0 ]]
     [[ "${lines[0]}" = "DEBUG: true" ]]
     [[ "${lines[1]}" = "DRYRUN: true" ]]
     [[ "${lines[2]}" = "EXPORT: true" ]]
