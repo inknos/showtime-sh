@@ -700,7 +700,6 @@ b() {
             PS1="\[\[${C_INTERACTIVE}\]($_demo) \$ \[${NC}\]\]" \
             bash --rcfile <(
             echo "set +h"
-            echo "history -r '$_demo_histfile'"
             echo "trap 'history -w \"$_demo_histfile\"' EXIT"
             echo "# Load bash completion"
             echo "if [ -f /etc/bash_completion ]; then"
