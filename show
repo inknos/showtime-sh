@@ -752,7 +752,7 @@ DRYRUN=${DRYRUN:-false}
 CLEAN=${CLEAN:-false}
 
 
-if ! VALID_ARGS=$(
+if ! _valid_args=$(
     getopt -o cde:hqoy \
         --long clean,dryrun,export:,goon,help,offline,quiet -- "$@")
 then
@@ -760,7 +760,7 @@ then
     usage
 fi
 
-eval set -- "$VALID_ARGS"
+eval set -- "$_valid_args"
 while true; do
     case "$1" in
         -c|--clean)
