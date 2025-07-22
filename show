@@ -610,10 +610,10 @@ e() {
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        _histfile="$_demo_histfile" bash -c "$1" >/dev/null 2>&1
+        HISTFILE="$_demo_histfile" bash -c "$1" >/dev/null 2>&1
     else
         # Execute with _histfile set
-        _histfile="$_demo_histfile" bash -c "$1"
+        HISTFILE="$_demo_histfile" bash -c "$1"
     fi
     local exit_code=$?
     _print_newline
@@ -634,10 +634,10 @@ et() {
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        _histfile="$_demo_histfile" \
+        HISTFILE="$_demo_histfile" \
             timeout "$timeout_duration" bash -c "$1" 2>&1 /dev/null
     else
-        _histfile="$_demo_histfile" \
+        HISTFILE="$_demo_histfile" \
             timeout "$timeout_duration" bash -c "$1"
     fi
     local exit_code=$?
@@ -652,7 +652,7 @@ ed() {
     _print_debug_short_separator
     echo "$1" >> "$_demo_histfile"
 
-    _histfile="$_demo_histfile" bash -c "$1"
+    HISTFILE="$_demo_histfile" bash -c "$1"
     local exit_code=$?
     _print_newline
     return $exit_code
@@ -696,7 +696,7 @@ b() {
         else
             _demo=$_demo_name
         fi
-        _histfile="$_demo_histfile" \
+        HISTFILE="$_demo_histfile" \
             PS1="\[\[${C_INTERACTIVE}\]($_demo) \$ \[${NC}\]\]" \
             bash --rcfile <(
             echo "set +h"
