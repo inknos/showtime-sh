@@ -357,14 +357,14 @@ DEBUG
 .. _show-functions-debug-d:
 
 **d** *<text>*
-:   Print debug text. If text is longer than 80 characters, it will be wrapped. Always printed.
+:   Print debug text. If text is longer than 80 characters, it will be wrapped. Printed if *DEBUG=true* only.
 
     Not silenced by *QUIET=true*, can't be exported with *EXPORT=true*
 
 .. _show-functions-debug-ed:
 
 **ed** *<command>*
-:   Print and execute a debug command. Always executed.
+:   Print and execute a debug command. Execuded if *DEBUG=true* only.
 
     Not silenced by *QUIET=true*, can't be exported with *EXPORT=true*
 

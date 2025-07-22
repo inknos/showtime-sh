@@ -151,3 +151,22 @@ setup() {
     _=$(( status == 0 ))
     [[ "${lines[0]}" = "" ]]
 }
+
+# check that commands exec with e are added to the temp history
+@test "./show history" {
+    run ./show test/run/history
+    _=$(( status == 0 ))
+    [[ "${lines[5]}" = "echo e" ]]
+    [[ "${lines[6]}" = "echo et" ]]
+    [[ "${lines[7]}" =~ ^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{10}$ ]]
+}
+
+# check debug is added to history
+@test "DEBUG=true ./show history" {
+    DEBUG=true run ./show test/run/history
+    _=$(( status == 0 ))
+    [[ "${lines[7]}" = "echo e" ]]
+    [[ "${lines[8]}" = "echo et" ]]
+    [[ "${lines[9]}" = "echo ed" ]]
+    [[ "${lines[10]}" =~ ^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{10}$ ]]
+}

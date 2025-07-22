@@ -610,10 +610,10 @@ e() {
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        HISTFILE="$_demo_histfile" bash -c "$1" >/dev/null 2>&1
+        bash -c "$@" >/dev/null 2>&1
     else
         # Execute with _histfile set
-        HISTFILE="$_demo_histfile" bash -c "$1"
+        bash -c "$@"
     fi
     local exit_code=$?
     _print_newline
@@ -634,28 +634,29 @@ et() {
 
     if [[ "$QUIET" = "true" ]]; then
         # run command and redirect its output to /dev/null
-        HISTFILE="$_demo_histfile" \
-            timeout "$timeout_duration" bash -c "$1" 2>&1 /dev/null
+        timeout "$timeout_duration" bash -c "$@" 2>&1 /dev/null
     else
-        HISTFILE="$_demo_histfile" \
-            timeout "$timeout_duration" bash -c "$1"
+        timeout "$timeout_duration" bash -c "$@"
     fi
     local exit_code=$?
+    _print_newline
     if (( exit_code == 124 )); then
         pw "Command timed out after ${timeout_duration} seconds"
     fi
 }
 
 ed() {
-    _print_debug_short_separator
+    #_print_debug_short_separator
     _print_debug "$1"
-    _print_debug_short_separator
-    echo "$1" >> "$_demo_histfile"
+    #_print_debug_short_separator
+    if [[ "$DEBUG" = "true" ]]; then
+        echo "$1" >> "$_demo_histfile"
 
-    HISTFILE="$_demo_histfile" bash -c "$1"
-    local exit_code=$?
-    _print_newline
-    return $exit_code
+        bash -c "$@"
+        local exit_code=$?
+        _print_newline
+        return $exit_code
+    fi
 }
 # Function to pause demo execution based on GOON variable
 w() {
