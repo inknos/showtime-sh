@@ -52,7 +52,7 @@ _reverse='\033[7m'
 # No Color
 NC='\033[0m'
 
-LINE_LENGTH=${LINE_LENGTH:-78}
+LINE_LENGTH=${LINE_LENGTH:-80}
 
 # Semantic color definitions (configurable)
 C_HEADER=${C_HEADER:-$_fg_cyan}
@@ -104,7 +104,11 @@ _trim() {
 }
 
 _sequence() {
-    for ((i = 0; i < LINE_LENGTH; i++)); do
+    local length="$1"
+    if [[ -z "$length" ]]; then
+        length="$LINE_LENGTH"
+    fi
+    for ((i = 0; i < length; i++)); do
         printf '='
     done
 }
@@ -206,16 +210,9 @@ _print_exiting_bash() {
 }
 
 _print_press_enter_to_continue() {
-    if [[ \
-        "$EXPORT_FORMAT" = "sh" || \
-        "$EXPORT_FORMAT" = "md" \
-        ]]; then
-        : # do nothing
-    elif [[ "$QUIET" = "true" ]]; then
-        : # do nothing
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] || [[ "$EXPORT_FORMAT" = "md" ]] && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "${C_PROMPT}Press Enter to continue...${NC}"
-    fi
 }
 
 _print_header() {
@@ -225,11 +222,19 @@ _print_header() {
 
     # the first argument is the header level and it's internal only
     shift
-    echo -e "${C_HEADER}$(_sequence)${NC}"
-    echo "$*" | fold -s -w "$LINE_LENGTH" | while IFS= read -r line; do
-        echo -e "${C_HEADER_TEXT}$( _trim "$line" )${NC}"
-    done
-    echo -e "${C_HEADER}$(_sequence)${NC}\n"
+    local header_string="$*"
+    local header_length=${#header_string}
+    if (( header_length + 2 < LINE_LENGTH )); then
+        echo -e "${C_HEADER}$(_sequence $((header_length + 2)))${NC}"
+        echo -e " ${C_HEADER_TEXT}$header_string${NC}"
+        echo -e "${C_HEADER}$(_sequence $((header_length + 2)))${NC}"
+    else
+        echo -e "${C_HEADER}$(_sequence "$LINE_LENGTH")${NC}"
+        echo "$header_string" | fold -s -w $((LINE_LENGTH - 2)) | while IFS= read -r line; do
+            echo -e "${C_HEADER_TEXT}$( _trim "$line" )${NC}"
+        done
+        echo -e "${C_HEADER}$(_sequence "$LINE_LENGTH")${NC}"
+    fi
 }
 
 _print_first_line() {
