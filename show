@@ -389,7 +389,9 @@ _export_sh_comment() {
     # Example:
     # _export_sh_comment "This is a comment"
     # # This is a comment
-    echo "$*" | fold -s -w 78 | sed 's/^/# /'
+    echo "$*" | fold -s -w 78 | while IFS= read -r line; do
+        echo "# $(_trim "$line")"
+    done
 }
 
 _export_sh_command() {

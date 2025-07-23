@@ -19,10 +19,10 @@ setup() {
   ${C_TEXT@E}Voluptatem libero eos voluptates culpa${NC@E}"
 }
 
-@test "p \"strip     spaces\"" {
-    run p "strip     spaces"
+@test "p \"do not strip     spaces\"" {
+    run p "do not strip     spaces"
     assert_success
-    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}strip spaces${NC@E}"
+    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}do not strip     spaces${NC@E}"
 }
 
 @test "DRYRUN=true p \"test\"" {
