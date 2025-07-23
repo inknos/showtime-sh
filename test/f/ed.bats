@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
 
 setup() {
+    load ../test_helper/bats-support/load
+    load ../test_helper/bats-assert/load
     load ../import_showtime.bash
 }
 
@@ -10,28 +12,27 @@ teardown() {
 
 @test "ed \"echo test\"" {
     run ed "echo test"
-    _=$(( status == 0 ))
-    _=$(( ${#lines[@]} == 0 ))
+    assert_success
+    assert_output ""
 }
 
 @test "ed \"echo test\" > test.txt" {
     run ed "echo test > test.txt"
-    _=$(( status == 0 ))
-    _=$(( ${#lines[@]} == 0 ))
+    assert_success
+    assert_output ""
     [[ ! -f "test.txt" ]]
 }
 
 @test "DEBUG=true ed \"echo test\"" {
     DEBUG=true run ed "echo test"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}echo test${NC@E}" ]]
-    [[ "${lines[1]}" = "test" ]]
-
+    assert_success
+    assert_output "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}echo test${NC@E}
+test"
 }
 
 @test "DEBUG=true QUIET=true ed \"echo test\"" {
     DEBUG=true QUIET=true run ed "echo test"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}echo test${NC@E}" ]]
-    [[ "${lines[1]}" = "test" ]]
+    assert_success
+    assert_output "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}echo test${NC@E}
+test"
 }

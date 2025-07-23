@@ -271,6 +271,8 @@ _print_separator() {
 }
 
 _print_debug_short_separator() {
+    # Print debug short separator if DEBUG is true
+    # Return 1 otherwise
     [[ "$DEBUG" = "true" ]] && \
         echo -e "${C_DEBUG}---${NC}"
 }
@@ -300,6 +302,8 @@ _print_command() {
 }
 
 _print_debug() {
+    # Print debug message if DEBUG is true
+    # Return 1 otherwise
     [[ "$DEBUG" = "true" ]] && \
         echo -e "${C_DEBUG}${S_DEBUG}${NC} ${C_DEBUG_TEXT}$*${NC}"
 }
