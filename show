@@ -117,10 +117,10 @@ _export_sh_intestation() {
 }
 
 _export_intestation() {
+    [[ -z "$EXPORT_FORMAT" ]]
     [[ "$EXPORT_FORMAT" = "sh" ]] && \
-        _export_sh_intestation
-    [[ "$EXPORT_FORMAT" = "md" ]] && \
-        : # do nothing
+        _export_sh_intestation && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && return
 }
 
 # Global history file for demo commands
