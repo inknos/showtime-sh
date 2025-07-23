@@ -419,11 +419,6 @@ _export_sh_header() {
     echo
 }
 
-_export_sh_noop() {
-    # Do nothing
-    :  # do nothing
-}
-
 # Set up the trap
 trap 'handle_sigint' SIGINT
 
