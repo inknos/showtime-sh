@@ -78,35 +78,32 @@ S_ERROR=${S_ERROR:-"✗"}
 S_DEBUG=${S_DEBUG:-"$"}
 S_COMMAND=${S_COMMAND:-"$"}
 
+# Print debug info and exit with error
 _debug_info() {
     echo "DEBUG: $DEBUG"
     echo "DRYRUN: $DRYRUN"
-    echo "EXPORT: $EXPORT"
     echo "EXPORT_FORMAT: $EXPORT_FORMAT"
     echo "QUIET: $QUIET"
+    exit 1
 }
 
 _check_env() {
-    if [[ "$EXPORT_FORMAT" != "" ]]; then
-        # Validate EXPORT_FORMAT has valid values
-        if [[ "$EXPORT_FORMAT" != "sh" && \
-           "$EXPORT_FORMAT" != "md" ]]; then
-            echo "ERROR: EXPORT_FORMAT must be 'sh' \
-or 'md', got: '$EXPORT_FORMAT'"
+    if [[ -n "$EXPORT_FORMAT" ]]; then
+        # EXPORT_FORMAT must be 'sh' or 'md'
+        if [[ "$EXPORT_FORMAT" != "sh" ]] && [[ "$EXPORT_FORMAT" != "md" ]]; then
+            echo "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: '$EXPORT_FORMAT'"
             _debug_info
-            exit 1
         fi
-        EXPORT=true
-    fi
 
-    # EXPORT can't be set with QUIET and DRYRUN
-    # exit if set together
-    if [[ "$EXPORT" = "true" && \
-       "$QUIET" = "true" && \
-       "$DRYRUN" = "true" ]]; then
-        echo "ERROR: EXPORT can't be set with QUIET and DRYRUN"
-        _debug_info
-        exit 1
+        # EXPORT_FORMAT can't be set with QUIET or DRYRUN
+        # exit if set together
+        #
+        # EXPORT_FORMAT can't be set with EXPORT
+        # exit if set together
+        if [[ "$QUIET" = "true" ]] && [[ "$DRYRUN" = "true" ]]; then
+            echo "ERROR: EXPORT_FORMAT can't be set with QUIET and DRYRUN"
+            _debug_info
+        fi
     fi
 }
 
@@ -120,23 +117,23 @@ _export_sh_intestation() {
 }
 
 _export_intestation() {
-    if [[ "$EXPORT_FORMAT" = "sh" ]]; then
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
         _export_sh_intestation
-    elif [[ "$EXPORT_FORMAT" = "md" ]]; then
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
         : # do nothing
-    elif [[ "$EXPORT" = "true" ]]; then
-        _export_sh_intestation
-    fi
 }
 
 # Global history file for demo commands
 _demo_histfile=$(mktemp)
 
 _print_sigint_ctrl_c() {
-    if [[ "$EXPORT" = "true" ]]; then
-        _export_sh_noop
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" \
+        ]]; then
+        : # do nothing
     elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
+        : # do nothing
     else
         echo -e "\n${C_INTERACTIVE}Ctrl+C detected \
 - press Ctrl+C again within 2 seconds to exit demo${NC}"
@@ -144,30 +141,39 @@ _print_sigint_ctrl_c() {
 }
 
 _print_entering_bash() {
-    if [[ "$EXPORT" = "true" ]]; then
-        _export_sh_noop
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" \
+        ]]; then
+        : # do nothing
     elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
+        : # do nothing
     else
         echo -e "${C_INTERACTIVE}Entering bash...${NC}\n"
     fi
 }
 
 _print_exiting_bash() {
-    if [[ "$EXPORT" = "true" ]]; then
-        _export_sh_noop
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" \
+        ]]; then
+        : # do nothing
     elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
+        : # do nothing
     else
         echo -e "${C_INTERACTIVE}Exiting bash...${NC}\n"
     fi
 }
 
 _print_press_enter_to_continue() {
-    if [[ "$EXPORT" = "true" ]]; then
-        _export_sh_noop
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" \
+        ]]; then
+        : # do nothing
     elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
+        : # do nothing
     else
         echo -e "${C_PROMPT}Press Enter to continue...${NC}"
     fi
@@ -180,8 +186,6 @@ _print_header() {
         _export_sh_header "$@"
     elif [[ "$EXPORT_FORMAT" = "md" ]]; then
         _export_md_header "$@"
-    elif [[ "$EXPORT" = "true" ]]; then
-        _export_sh_header "$@"
     else
         # the first argument is the header level and it's internal only
         shift
@@ -192,156 +196,90 @@ _print_header() {
 }
 
 _print_first_line() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "$@"
-        else
-            _export_sh_comment "$@"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "$@" && return
+
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "$@" && return
+
+    [[ "$QUIET" = "true" ]] || \
         echo -e "${C_BULLET}${S_BULLET}${NC} ${C_TEXT}$*${NC}"
-    fi
 }
 
 
 _print_line() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "$@"
-        else
-            _export_sh_comment "$@"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "$@" && return
+
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "$@" && return
+
+    [[ "$QUIET" = "true" ]] || \
         echo -e "  ${C_TEXT}$*${NC}"
-    fi
 }
 
 _print_newline() {
-    if [[ "$EXPORT" = "true" ]]; then
-        echo
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
-        echo
-    fi
+    [[ "$EXPORT_FORMAT" = "sh" || \
+       "$EXPORT_FORMAT" = "md" || \
+       "$QUIET" = "true" ]] && return
+    echo
 }
 
 _clear() {
-    if [[ "$EXPORT" = "true" ]]; then
-        _export_sh_noop
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
-        clear
-    fi
+    [[ "$EXPORT_FORMAT" = "sh" || \
+       "$EXPORT_FORMAT" = "md" || \
+       "$QUIET" = "true" ]] && return
+    clear
 }
 
 _print_success() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "$@"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "$@"
-        else
-            _export_sh_comment "$@"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "$@" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "$@" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "\n${C_SUCCESS}${S_SUCCESS} $*${NC}\n"
-    fi
 }
 
 _print_error() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "ERR: $*"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "ERR: $*"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "ERR: $*"
-        else
-            _export_sh_comment "ERR: $*"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "ERR: $*" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "ERR: $*" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "\n${C_ERROR}${S_ERROR} $*${NC}\n"
-    fi
 }
 
 _print_warning() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "WRN: $*"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "WRN: $*"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "WRN: $*"
-        else
-            _export_sh_comment "WRN: $*"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "WRN: $*" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "WRN: $*" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "\n${C_WARNING}${S_WARNING} $*${NC}\n"
-    fi
 }
 
 _print_info() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "INF: $*"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "INF: $*"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "INF: $*"
-        else
-            _export_sh_comment "INF: $*"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "INF: $*" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "INF: $*" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "${C_INFO}${S_INFO} $*${NC}"
-    fi
 }
 
 _print_separator() {
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_comment "----------------------------------------"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_comment "----------------------------------------"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_comment "---"
-        else
-            _export_sh_comment "----------------------------------------"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_comment "----------------------------------------" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_comment "---" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "${C_SEPARATOR}----------------------------------------${NC}"
-    fi
 }
 
 _print_debug_short_separator() {
-    if [[ "$DEBUG" = "true" ]]; then
+    [[ "$DEBUG" = "true" ]] && \
         echo -e "${C_DEBUG}---${NC}"
-    fi
 }
 
 _print_command() {
@@ -360,27 +298,17 @@ _print_command() {
     # DRYRUN=true _print_command "echo 'This is a command'"
     # echo 'This is a command'
 
-    if [[ "$EXPORT" = "true" ]]; then
-        if [[ -z "$EXPORT_FORMAT" ]]; then
-            _export_sh_command "$@"
-        elif [[ "$EXPORT_FORMAT" = "sh" ]]; then
-            _export_sh_command "$@"
-        elif [[ "$EXPORT_FORMAT" = "md" ]]; then
-            _export_md_command "$@"
-        else
-            _export_sh_command "$@"
-        fi
-    elif [[ "$QUIET" = "true" ]]; then
-        _export_sh_noop
-    else
+    [[ "$EXPORT_FORMAT" = "sh" ]] && \
+        _export_sh_command "$@" && return
+    [[ "$EXPORT_FORMAT" = "md" ]] && \
+        _export_md_command "$@" && return
+    [[ "$QUIET" = "true" ]] || \
         echo -e "${C_COMMAND}${S_COMMAND}${NC} ${C_COMMAND_TEXT}$*${NC}"
-    fi
 }
 
 _print_debug() {
-    if [[ "$DEBUG" = "true" ]]; then
+    [[ "$DEBUG" = "true" ]] && \
         echo -e "${C_DEBUG}${S_DEBUG}${NC} ${C_DEBUG_TEXT}$*${NC}"
-    fi
 }
 
 # Signal handling for Ctrl+C
@@ -596,12 +524,16 @@ p-() {
 # put a newline at the end
 e() {
     # Print command and run it
-    # if EXPORT is true, just print the command
+    # if EXPORT_FORMAT is sh or md, just print the command
     # if QUIET is true, do not print the command but still run it
     # if DRYRUN is true, print the command do not run it
     # _print_command will understand the EXPORT, QUIET, and DRYRUN vars
     _print_command "$1"
-    if [[ "$EXPORT" = "true" ]] || [[ "$DRYRUN" = "true" ]]; then
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" || \
+        "$DRYRUN" = "true" \
+        ]]; then
         return
     fi
 
@@ -623,7 +555,11 @@ e() {
 # Function to print command in red and execute it with timeout
 et() {
     _print_command "$1"
-    if [[ "$EXPORT" = "true" ]] || [[ "$DRYRUN" = "true" ]]; then
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" || \
+        "$DRYRUN" = "true" \
+        ]]; then
         return
     fi
 
@@ -665,7 +601,10 @@ w() {
     if [[ "${GOON:-false}" = "true" ]]; then
         # If GOON is true, continue without pausing
         return
-    elif [[ "$EXPORT" = "true" ]]; then
+    elif [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" \
+        ]]; then
         return # do nothing
     elif [[ "$QUIET" = "true" ]]; then
         : # do nothing
@@ -683,9 +622,11 @@ w() {
 }
 
 b() {
-    if [[ "$EXPORT" = "true" ]]; then
-        : # do nothing
-    elif [[ "$DRYRUN" = "true" ]]; then
+    if [[ \
+        "$EXPORT_FORMAT" = "sh" || \
+        "$EXPORT_FORMAT" = "md" || \
+        "$DRYRUN" = "true" \
+        ]]; then
         : # do nothing
     elif [[ "$QUIET" = "true" ]]; then
         : # do nothing
@@ -746,7 +687,6 @@ fi
 GOON=${GOON:-false}
 OFFLINE=${OFFLINE:-false}
 QUIET=${QUIET:-false}
-EXPORT=${EXPORT:-}
 EXPORT_FORMAT=${EXPORT_FORMAT:-}
 DRYRUN=${DRYRUN:-false}
 CLEAN=${CLEAN:-false}
@@ -774,11 +714,9 @@ while true; do
         -e|--export)
             if [[ "$2" = "sh" ]]; then
                 EXPORT_FORMAT="sh"
-                EXPORT=true
                 shift 2
             elif [[ "$2" = "md" ]]; then
                 EXPORT_FORMAT="md"
-                EXPORT=true
                 shift 2
             else
                 usage
@@ -892,7 +830,7 @@ if [[ -f "$_demo_script" ]]; then
     cd "$_demo_dir" || exit 1
     # shellcheck source=/dev/null
     GOON="$GOON" \
-    EXPORT="$EXPORT" \
+    EXPORT_FORMAT="$EXPORT_FORMAT" \
     _demo_name="$_demo_name" \
         source demo.sh
     exit 0

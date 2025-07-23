@@ -4,6 +4,8 @@
 # ensure that conflicts are detected.
 
 setup() {
+    load ../test_helper/bats-support/load
+    load ../test_helper/bats-assert/load
     load ../import_showtime.bash
     unset QUIET
     unset DRYRUN
@@ -13,80 +15,84 @@ setup() {
 
 @test "_check_env" {
     run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
 @test "DEBUG=true _check_env" {
     DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
 @test "DRYRUN=true _check_env" {
     DRYRUN=true run _check_env
-    _=$(( status == 0 ))
-}
-
-@test "EXPORT=true _check_env" {
-    EXPORT=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
 @test "EXPORT_FORMAT='sh' _check_env" {
     EXPORT_FORMAT='sh' run _check_env
-    _=$(( status == 0 ))
+    assert_success
+}
+
+@test "EXPORT_FORMAT='md' _check_env" {
+    EXPORT_FORMAT='md' run _check_env
+    assert_success
 }
 
 @test "EXPORT_FORMAT=invalid _check_env" {
     EXPORT_FORMAT=invalid run _check_env
-    _=$(( status == 1 ))
-    [[ "${lines[0]}" = "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: 'invalid'" ]]
+    assert_failure
+    assert_output --partial "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: 'invalid'"
+    assert_output --partial "DEBUG: "
+    assert_output --partial "DRYRUN: "
+    assert_output --partial "EXPORT_FORMAT: invalid"
+    assert_output --partial "QUIET: "
 }
 
 @test "QUIET=true _check_env" {
     QUIET=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
 @test "QUIET=true DRYRUN=true _check_env" {
     # QUIET: true
     # DRYRUN: true
     QUIET=true DRYRUN=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
-@test "QUIET=true EXPORT=true _check_env" {
+@test "QUIET=true EXPORT_FORMAT=sh _check_env" {
     # QUIET: true
-    # EXPORT: true
-    QUIET=true EXPORT=true run _check_env
-    _=$(( status == 0 ))
+    # EXPORT_FORMAT: sh
+    QUIET=true EXPORT_FORMAT=sh run _check_env
+    assert_success
 }
 
 @test "QUIET=true DEBUG=true _check_env" {
     # QUIET: true
     # DEBUG: true
     QUIET=true DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
-@test "DRYRUN=true EXPORT=true _check_env" {
+@test "DRYRUN=true EXPORT_FORMAT=sh _check_env" {
     # DRYRUN: true
-    # EXPORT: true
-    DRYRUN=true EXPORT=true run _check_env
-    _=$(( status == 0 ))
+    # EXPORT_FORMAT: sh
+    DRYRUN=true EXPORT_FORMAT=sh run _check_env
+    assert_success
 }
 
 @test "DRYRUN=true DEBUG=true _check_env" {
     # DRYRUN: true
     # DEBUG: true
     DRYRUN=true DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
-@test "EXPORT=true DEBUG=true _check_env" {
-    # EXPORT: true
+@test "EXPORT_FORMAT=sh DEBUG=true _check_env" {
+    # EXPORT_FORMAT: sh
     # DEBUG: true
-    EXPORT=true DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    EXPORT_FORMAT=sh DEBUG=true run _check_env
+    assert_success
 }
 
 @test "QUIET=true DRYRUN=true EXPORT_FORMAT=sh _check_env" {
@@ -94,27 +100,12 @@ setup() {
     # DRYRUN: true
     # EXPORT_FORMAT: sh
     QUIET=true DRYRUN=true EXPORT_FORMAT=sh run _check_env
-    _=$(( status == 1 ))
-    [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
-    [[ "${lines[1]}" = "DEBUG: " ]]
-    [[ "${lines[2]}" = "DRYRUN: true" ]]
-    [[ "${lines[3]}" = "EXPORT: true" ]]
-    [[ "${lines[4]}" = "EXPORT_FORMAT: sh" ]]
-    [[ "${lines[5]}" = "QUIET: true" ]]
-}
-
-@test "QUIET=true DRYRUN=true EXPORT=true _check_env" {
-    # QUIET: true
-    # DRYRUN: true
-    # EXPORT: true
-    QUIET=true DRYRUN=true EXPORT=true run _check_env
-    _=$(( status == 1 ))
-    [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
-    [[ "${lines[1]}" = "DEBUG: " ]]
-    [[ "${lines[2]}" = "DRYRUN: true" ]]
-    [[ "${lines[3]}" = "EXPORT: true" ]]
-    [[ "${lines[4]}" = "EXPORT_FORMAT: " ]]
-    [[ "${lines[5]}" = "QUIET: true" ]]
+    assert_failure
+    assert_output --partial "ERROR: EXPORT_FORMAT can't be set with QUIET and DRYRUN"
+    assert_output --partial "DEBUG: "
+    assert_output --partial "DRYRUN: true"
+    assert_output --partial "EXPORT_FORMAT: sh"
+    assert_output --partial "QUIET: true"
 }
 
 @test "QUIET=true DRYRUN=true DEBUG=true _check_env" {
@@ -122,29 +113,28 @@ setup() {
     # DRYRUN: true
     # DEBUG: true
     QUIET=true DRYRUN=true DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    assert_success
 }
 
-@test "DRYRUN=true EXPORT=true DEBUG=true _check_env" {
+@test "DRYRUN=true EXPORT_FORMAT=sh DEBUG=true _check_env" {
     # DRYRUN: true
-    # EXPORT: true
+    # EXPORT_FORMAT: sh
     # DEBUG: true
-    DRYRUN=true EXPORT=true DEBUG=true run _check_env
-    _=$(( status == 0 ))
+    DRYRUN=true EXPORT_FORMAT=sh DEBUG=true run _check_env
+    assert_success
 }
 
 
-@test "QUIET=true DRYRUN=true EXPORT=true DEBUG=true _check_env" {
+@test "QUIET=true DRYRUN=true EXPORT_FORMAT=sh DEBUG=true _check_env" {
     # QUIET: true
     # DRYRUN: true
-    # EXPORT: true
+    # EXPORT_FORMAT: sh
     # DEBUG: true
-    QUIET=true DRYRUN=true EXPORT=true DEBUG=true run _check_env
-    _=$(( status == 1 ))
-    [[ "${lines[0]}" = "ERROR: EXPORT can't be set with QUIET and DRYRUN" ]]
-    [[ "${lines[1]}" = "DEBUG: true" ]]
-    [[ "${lines[2]}" = "DRYRUN: true" ]]
-    [[ "${lines[3]}" = "EXPORT: true" ]]
-    [[ "${lines[4]}" = "EXPORT_FORMAT: " ]]
-    [[ "${lines[5]}" = "QUIET: true" ]]
+    QUIET=true DRYRUN=true EXPORT_FORMAT=sh DEBUG=true run _check_env
+    assert_failure
+    assert_output --partial "ERROR: EXPORT_FORMAT can't be set with QUIET and DRYRUN"
+    assert_output --partial "DEBUG: true"
+    assert_output --partial "DRYRUN: true"
+    assert_output --partial "EXPORT_FORMAT: sh"
+    assert_output --partial "QUIET: true"
 }

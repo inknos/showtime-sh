@@ -45,12 +45,31 @@ teardown() {
     [[ "${lines[0]}" = "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}nonsense${NC@E}" ]]
 }
 
+# EXPORT=true defaults to EXPORT_FORMAT="sh"
 @test "EXPORT=true e \"echo test\"" {
     EXPORT=true run e "echo test"
-    _=$(( status == 0 ))
+    [[ $status == 0 ]]
     [[ "${lines[0]}" = "echo test" ]]
-    _=$(( ${#lines[@]} == 1 ))
+    [[ ${#lines[@]} == 1 ]]
 }
+
+
+# Test EXPORT_FORMAT="sh"
+@test "EXPORT_FORMAT=\"sh\" e \"echo test\"" {
+    EXPORT_FORMAT="sh" run e "echo test"
+    [[ $status == 0 ]]
+    [[ "${lines[0]}" = "echo test" ]]
+    [[ ${#lines[@]} == 1 ]]
+}
+
+#Test EXPORT_FORMAT="md"
+@test "EXPORT_FORMAT=\"md\" e \"echo test\"" {
+    EXPORT_FORMAT="md" run e "echo test"
+    [[ $status == 0 ]]
+    [[ "${lines[0]}" = "echo test" ]]
+    [[ ${#lines[@]} == 1 ]]
+}
+
 
 # Ensure a command is not run when EXPORT is set
 @test "EXPORT=true e \"nonsense\"" {
