@@ -1,49 +1,66 @@
 #!/usr/bin/env bats
 
 setup() {
+    load ../test_helper/bats-support/load
+    load ../test_helper/bats-assert/load
     load ../import_showtime.bash
 }
 
 @test "p \"test\"" {
     run p "test"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test${NC@E}" ]]
+    assert_success
+    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test${NC@E}"
 }
 
 @test "p \"Est corrupti eius... (>80char)\"" {
     run p "Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est. Voluptatem libero eos voluptates culpa"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est.${NC@E}" ]]
-    [[ "${lines[1]}" = "  ${C_TEXT@E}Voluptatem libero eos voluptates culpa${NC@E}" ]]
+    assert_success
+    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est.${NC@E}
+  ${C_TEXT@E}Voluptatem libero eos voluptates culpa${NC@E}"
 }
 
 @test "p \"strip     spaces\"" {
     run p "strip     spaces"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}strip spaces${NC@E}" ]]
+    assert_success
+    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}strip spaces${NC@E}"
 }
 
 @test "DRYRUN=true p \"test\"" {
     DRYRUN=true run p "test"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test${NC@E}" ]]
+    assert_success
+    assert_output "${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}test${NC@E}"
 }
 
-@test "EXPORT=true p \"test\"" {
-    EXPORT=true run p "test"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "# test" ]]
+@test "EXPORT_FORMAT=sh p \"test\"" {
+    EXPORT_FORMAT="sh" run p "test"
+    assert_success
+    assert_output "# test"
 }
 
-@test "EXPORT=true p \"Est corrupti eius... (>80char)\"" {
-    EXPORT=true run p "Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est. Voluptatem libero eos voluptates culpa"
-    _=$(( status == 0 ))
-    [[ "${lines[0]}" = "# Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est." ]]
-    [[ "${lines[1]}" = "# Voluptatem libero eos voluptates culpa" ]]
+@test "EXPORT_FORMAT=sh p \"Est corrupti eius... (>80char)\"" {
+    EXPORT_FORMAT="sh" run p "Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est. Voluptatem libero eos voluptates culpa"
+    assert_success
+    assert_output "# Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est.
+# Voluptatem libero eos voluptates culpa"
 }
+
+@test "EXPORT_FORMAT=md p \"test\"" {
+    EXPORT_FORMAT="md" run p "test"
+    assert_success
+    assert_output "test"
+}
+
+
+@test "EXPORT_FORMAT=md p \"Est corrupti eius... (>80char)\"" {
+    EXPORT_FORMAT="md" run p "Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est. Voluptatem libero eos voluptates culpa"
+    assert_success
+    assert_output "Est corrupti eius quia quia aut animi. Ea pariatur ut et culpa totam est.
+Voluptatem libero eos voluptates culpa"
+}
+
 
 @test "QUIET=true p \"test\"" {
     QUIET=true run p "test"
-    _=$(( status == 0 ))
-    _=$(( ${#lines[@]} == 0 ))
+    assert_success
+    assert_output ""
 }
