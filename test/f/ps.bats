@@ -9,15 +9,13 @@ setup() {
 @test "ps \"test\"" {
     run ps 'test'
     assert_success
-    assert_output "
-${C_SUCCESS@E}${S_SUCCESS} test${NC@E}"
+    assert_output "${C_SUCCESS@E}${S_SUCCESS} test${NC@E}"
 }
 
 @test "DRYRUN=true ps \"test\"" {
     DRYRUN=true run ps 'test'
     assert_success
-    assert_output "
-${C_SUCCESS@E}${S_SUCCESS} test${NC@E}"
+    assert_output "${C_SUCCESS@E}${S_SUCCESS} test${NC@E}"
 }
 
 @test "EXPORT_FORMAT=sh ps \"test\"" {

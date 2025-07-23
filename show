@@ -80,6 +80,8 @@ S_ERROR=${S_ERROR:-"✗"}
 S_DEBUG=${S_DEBUG:-"$"}
 S_COMMAND=${S_COMMAND:-"$"}
 
+_script=false
+
 # Print debug info and exit with error
 _debug_info() {
     echo "DEBUG: $DEBUG"
@@ -115,6 +117,9 @@ _check_env() {
     if [[ -n "$EXPORT_FORMAT" ]]; then
         # EXPORT_FORMAT must be 'sh' or 'md'
         if [[ "$EXPORT_FORMAT" != "sh" ]] && [[ "$EXPORT_FORMAT" != "md" ]]; then
+            [[ "$_script" = true ]] && \
+                _print_error "--export takes 'sh' or 'md', got: '$EXPORT_FORMAT'" && \
+                usage
             _print_error "EXPORT_FORMAT must be 'sh' or 'md', got: '$EXPORT_FORMAT'"
             _debug_info
         fi
@@ -125,11 +130,26 @@ _check_env() {
         # EXPORT_FORMAT can't be set with EXPORT
         # exit if set together
         if [[ "$QUIET" = "true" ]] || [[ "$DRYRUN" = "true" ]]; then
+            temp_export_format="$EXPORT_FORMAT"
+            temp_quiet="$QUIET"
+            temp_dryrun="$DRYRUN"
+            unset EXPORT_FORMAT
+            unset QUIET
+            unset DRYRUN
+            [[ "$_script" = true ]] && \
+                _print_error "--export can't be set with --quiet or --dryrun" && \
+                usage
             _print_error "EXPORT_FORMAT can't be set with QUIET or DRYRUN"
+            EXPORT_FORMAT="$temp_export_format"
+            QUIET="$temp_quiet"
+            DRYRUN="$temp_dryrun"
             _debug_info
         fi
     fi
     if [[ "$CLEAN" = true ]] && [[ "$OFFLINE" = true ]]; then
+        [[ "$_script" = true ]] && \
+            _print_error "--clean and --offline can't be set together" && \
+            usage
         _print_error "CLEAN and OFFLINE can't be set together"
         _debug_info
     fi
@@ -762,7 +782,7 @@ while true; do
     esac
 done
 
-_check_env
+_script=true _check_env
 
 # strips last /
 # strip first ./

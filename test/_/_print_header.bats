@@ -26,7 +26,7 @@ ${C_HEADER@E}$(printf '=%.0s' {1..78})${NC@E}"
     EXPORT_FORMAT='sh' run _print_header "1" "Test Header"
     assert_success
     assert_output "# $(printf '=%.0s' {1..78})
-#  Test Header
+# Test Header
 # $(printf '=%.0s' {1..78})"
 }
 

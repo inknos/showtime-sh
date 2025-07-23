@@ -9,29 +9,25 @@ setup() {
 @test "_print_success" {
     run _print_success 'test success'
     assert_success
-    assert_output "
-${C_SUCCESS@E}${S_SUCCESS} test success${NC@E}"
+    assert_output "${C_SUCCESS@E}${S_SUCCESS} test success${NC@E}"
 }
 
 @test "_print_success with custom symbol" {
     S_SUCCESS="S:" run _print_success 'test success'
     assert_success
-    assert_output "
-${C_SUCCESS@E}S: test success${NC@E}"
+    assert_output "${C_SUCCESS@E}S: test success${NC@E}"
 }
 
 @test "DRY_RUN=true _print_success" {
     DRY_RUN=true run _print_success 'test success'
     assert_success
-    assert_output "
-${C_SUCCESS@E}${S_SUCCESS} test success${NC@E}"
+    assert_output "${C_SUCCESS@E}${S_SUCCESS} test success${NC@E}"
 }
 
 @test "DRY_RUN=true _print_success with custom symbol" {
     DRY_RUN=true S_SUCCESS="S:" run _print_success 'test success'
     assert_success
-    assert_output "
-${C_SUCCESS@E}S: test success${NC@E}"
+    assert_output "${C_SUCCESS@E}S: test success${NC@E}"
 }
 
 @test "EXPORT_FORMAT='sh' _print_success" {

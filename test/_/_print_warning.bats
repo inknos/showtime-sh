@@ -15,32 +15,28 @@ setup() {
     run _print_warning 'test warning'
     assert_success
     # shellcheck disable=SC2153 # {C,S}_WARNING are confused and not found
-    assert_output "
-${C_WARNING@E}${S_WARNING} test warning${NC@E}"
+    assert_output "${C_WARNING@E}${S_WARNING} test warning${NC@E}"
 }
 
 @test "_print_warning with custom symbol" {
     S_WARNING="W:" run _print_warning 'test warning'
     assert_success
     # shellcheck disable=SC2153 # {C,S}_WARNING are confused and not found
-    assert_output "
-${C_WARNING@E}W: test warning${NC@E}"
+    assert_output "${C_WARNING@E}W: test warning${NC@E}"
 }
 
 @test "DRY_RUN=true _print_warning" {
     DRY_RUN=true run _print_warning 'test warning'
     assert_success
     # shellcheck disable=SC2153 # {C,S}_WARNING are confused and not found
-    assert_output "
-${C_WARNING@E}${S_WARNING} test warning${NC@E}"
+    assert_output "${C_WARNING@E}${S_WARNING} test warning${NC@E}"
 }
 
 @test "DRY_RUN=true _print_warning with custom symbol" {
     DRY_RUN=true S_WARNING="W:" run _print_warning 'test warning'
     assert_success
     # shellcheck disable=SC2153 # {C,S}_WARNING are confused and not found
-    assert_output "
-${C_WARNING@E}W: test warning${NC@E}"
+    assert_output "${C_WARNING@E}W: test warning${NC@E}"
 }
 
 @test "EXPORT_FORMAT='sh' _print_warning" {

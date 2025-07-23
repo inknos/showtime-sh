@@ -9,15 +9,13 @@ setup() {
 @test "pe \"test\"" {
     run pe 'test'
     assert_success
-    assert_output "
-${C_ERROR@E}${S_ERROR} test${NC@E}"
+    assert_output "${C_ERROR@E}${S_ERROR} test${NC@E}"
 }
 
 @test "DRYRUN=true pe \"test\"" {
     DRYRUN=true run pe 'test'
     assert_success
-    assert_output "
-${C_ERROR@E}${S_ERROR} test${NC@E}"
+    assert_output "${C_ERROR@E}${S_ERROR} test${NC@E}"
 }
 
 @test "EXPORT_FORMAT=sh pe \"test\"" {

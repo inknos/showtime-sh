@@ -9,15 +9,13 @@ setup() {
 @test "_print_error" {
     run _print_error 'test error'
     assert_success
-    assert_output "
-${C_ERROR@E}${S_ERROR} test error${NC@E}"
+    assert_output "${C_ERROR@E}${S_ERROR} test error${NC@E}"
 }
 
 @test "DRYRUN=true _print_error" {
     DRYRUN=true run _print_error 'test error'
     assert_success
-    assert_output "
-${C_ERROR@E}${S_ERROR} test error${NC@E}"
+    assert_output "${C_ERROR@E}${S_ERROR} test error${NC@E}"
 }
 
 @test "EXPORT_FORMAT='sh' _print_error" {

@@ -10,7 +10,11 @@ setup() {
     unset QUIET
     unset DRYRUN
     unset EXPORT
+    unset EXPORT_FORMAT
     unset DEBUG
+    unset CLEAN
+    unset OFFLINE
+    unset GOON
 }
 
 @test "_check_env" {
@@ -41,18 +45,13 @@ setup() {
 @test "EXPORT=true _check_env" {
     EXPORT=true run _check_env
     assert_success
-    assert_output "
-${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E}"
+    assert_output "${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E}"
 }
 
 @test "EXPORT_FORMAT=invalid _check_env" {
     EXPORT_FORMAT=invalid run _check_env
     assert_failure
-    assert_output --partial "ERROR: EXPORT_FORMAT must be 'sh' or 'md', got: 'invalid'"
-    assert_output --partial "DEBUG: "
-    assert_output --partial "DRYRUN: "
-    assert_output --partial "EXPORT_FORMAT: invalid"
-    assert_output --partial "QUIET: "
+    assert_line --index 0 "${C_ERROR@E}${S_ERROR} EXPORT_FORMAT must be 'sh' or 'md', got: 'invalid'${NC@E}"
 }
 
 @test "QUIET=true _check_env" {
@@ -71,7 +70,7 @@ ${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E
     # QUIET: true
     # EXPORT_FORMAT: sh
     QUIET=true EXPORT_FORMAT=sh run _check_env
-    assert_success
+    assert_failure
 }
 
 @test "QUIET=true DEBUG=true _check_env" {
@@ -85,7 +84,7 @@ ${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E
     # DRYRUN: true
     # EXPORT_FORMAT: sh
     DRYRUN=true EXPORT_FORMAT=sh run _check_env
-    assert_success
+    assert_failure
 }
 
 @test "DRYRUN=true DEBUG=true _check_env" {
@@ -108,11 +107,7 @@ ${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E
     # EXPORT_FORMAT: sh
     QUIET=true DRYRUN=true EXPORT_FORMAT=sh run _check_env
     assert_failure
-    assert_output --partial "ERROR: EXPORT_FORMAT can't be set with QUIET and DRYRUN"
-    assert_output --partial "DEBUG: "
-    assert_output --partial "DRYRUN: true"
-    assert_output --partial "EXPORT_FORMAT: sh"
-    assert_output --partial "QUIET: true"
+    assert_line --index 0 "${C_ERROR@E}${S_ERROR} EXPORT_FORMAT can't be set with QUIET or DRYRUN${NC@E}"
 }
 
 @test "QUIET=true DRYRUN=true DEBUG=true _check_env" {
@@ -128,7 +123,8 @@ ${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E
     # EXPORT_FORMAT: sh
     # DEBUG: true
     DRYRUN=true EXPORT_FORMAT=sh DEBUG=true run _check_env
-    assert_success
+    assert_failure
+    assert_line --index 0 "${C_ERROR@E}${S_ERROR} EXPORT_FORMAT can't be set with QUIET or DRYRUN${NC@E}"
 }
 
 
@@ -139,9 +135,5 @@ ${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E
     # DEBUG: true
     QUIET=true DRYRUN=true EXPORT_FORMAT=sh DEBUG=true run _check_env
     assert_failure
-    assert_output --partial "ERROR: EXPORT_FORMAT can't be set with QUIET and DRYRUN"
-    assert_output --partial "DEBUG: true"
-    assert_output --partial "DRYRUN: true"
-    assert_output --partial "EXPORT_FORMAT: sh"
-    assert_output --partial "QUIET: true"
+    assert_line --index 0 "${C_ERROR@E}${S_ERROR} EXPORT_FORMAT can't be set with QUIET or DRYRUN${NC@E}"
 }

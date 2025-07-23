@@ -15,7 +15,6 @@ teardown() {
     assert_success
     assert_output "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}sleep 100${NC@E}
 
-
 ${C_WARNING@E}${S_WARNING} Command timed out after .1 seconds${NC@E}"
 }
 

@@ -9,15 +9,13 @@ setup() {
 @test "pw \"test\"" {
     run pw 'test'
     assert_success
-    assert_output "
-${C_WARNING@E}${S_WARNING} test${NC@E}"
+    assert_output "${C_WARNING@E}${S_WARNING} test${NC@E}"
 }
 
 @test "DRYRUN=true pw \"test\"" {
     DRYRUN=true run pw 'test'
     assert_success
-    assert_output "
-${C_WARNING@E}${S_WARNING} test${NC@E}"
+    assert_output "${C_WARNING@E}${S_WARNING} test${NC@E}"
 }
 
 @test "EXPORT_FORMAT=sh pw \"test\"" {
