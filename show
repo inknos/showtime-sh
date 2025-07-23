@@ -87,6 +87,15 @@ _debug_info() {
     exit 1
 }
 
+_trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    printf '%s' "$var"
+}
+
 _check_env() {
     if [[ "$EXPORT" = "true" ]]; then
         _print_warning "EXPORT is deprecated, use EXPORT_FORMAT instead"
@@ -193,6 +202,7 @@ _print_header() {
 }
 
 _print_first_line() {
+    # Print the first line. Handle exporting and quiet
     [[ "$EXPORT_FORMAT" = "sh" ]] && \
         _export_sh_comment "$@" && return
 
@@ -205,6 +215,7 @@ _print_first_line() {
 
 
 _print_line() {
+    # Print a line. Handle exporting and quiet
     [[ "$EXPORT_FORMAT" = "sh" ]] && \
         _export_sh_comment "$@" && return
 
@@ -216,6 +227,7 @@ _print_line() {
 }
 
 _print_newline() {
+    # Print a newline if not exporting or quiet
     [[ "$EXPORT_FORMAT" = "sh" || \
        "$EXPORT_FORMAT" = "md" || \
        "$QUIET" = "true" ]] && return
@@ -223,6 +235,7 @@ _print_newline() {
 }
 
 _clear() {
+    # Print a clear screen if not exporting or quiet
     [[ "$EXPORT_FORMAT" = "sh" || \
        "$EXPORT_FORMAT" = "md" || \
        "$QUIET" = "true" ]] && return
@@ -487,10 +500,10 @@ p() {
     local first_line=true
     echo "$1" | fold -s -w 78 | while IFS= read -r line; do
         if [[ "$first_line" = true ]]; then
-            _print_first_line "$( echo "$line" | xargs )"
+            _print_first_line "$(_trim "$line")"
             first_line=false
         else
-            _print_line "$line"
+            _print_line "$(_trim "$line")"
         fi
     done
     _print_newline
