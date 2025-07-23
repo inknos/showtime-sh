@@ -499,8 +499,6 @@ but to run your code by invoking the :ref:`run <show-cli-options>` command.
 **GOON**
 :   If *true*, skips waiting for user input
 
-    Set *QUIET=true*
-
 .. _show-environment-variables-runtime-export:
 
 **EXPORT [DEPRECATED]**
@@ -518,12 +516,9 @@ but to run your code by invoking the :ref:`run <show-cli-options>` command.
     * **sh**: exports demo in shell script format
     * **md**: exports demo in markdown format
 
-    Set *QUIET=true* and *GOON=true*
+    Errors out if you set *QUIET=true*.
 
 .. _show-environment-variables-runtime-quiet:
 
 **QUIET**
 :   If *true*, disables all output
-
-    Set *GOON=true*
-
