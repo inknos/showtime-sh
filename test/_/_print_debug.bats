@@ -46,16 +46,23 @@ setup() {
 }
 
 # Debug overrides export
-@test "DEBUG=true EXPORT=true _print_debug" {
-    DEBUG=true EXPORT=true run _print_debug "debug message"
+@test "DEBUG=true EXPORT_FORMAT=sh _print_debug" {
+    DEBUG=true EXPORT_FORMAT=sh run _print_debug "debug message"
     assert_success
     # shellcheck disable=SC2153 # {C,S}_DEBUG are confused and not found
     assert_output "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}debug message${NC@E}"
 }
 
-@test "DEBUG=true EXPORT=true _print_debug with custom symbol" {
-    DEBUG=true EXPORT=true S_DEBUG=">" run _print_debug "debug message"
+@test "DEBUG=true EXPORT_FORMAT=sh _print_debug with custom symbol" {
+    DEBUG=true EXPORT_FORMAT=sh S_DEBUG=">" run _print_debug "debug message"
     assert_success
     # shellcheck disable=SC2153 # {C,S}_DEBUG are confused and not found
     assert_output "${C_DEBUG@E}>${NC@E} ${C_DEBUG_TEXT@E}debug message${NC@E}"
+}
+
+@test "DEBUG=true EXPORT_FORMAT='md' _print_debug" {
+    DEBUG=true EXPORT_FORMAT='md' run _print_debug "debug message"
+    assert_success
+    # shellcheck disable=SC2153 # {C,S}_DEBUG are confused and not found
+    assert_output "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}debug message${NC@E}"
 }

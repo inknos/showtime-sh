@@ -30,8 +30,14 @@ setup() {
     assert_output "${C_DEBUG@E}${S_DEBUG}${NC@E} ${C_DEBUG_TEXT@E}test${NC@E}"
 }
 
-@test "DEBUG=true EXPORT=true S_DEBUG=\"!\" d \"test\"" {
-    DEBUG=true EXPORT=true S_DEBUG="!" run d "test"
+@test "DEBUG=true EXPORT_FORMAT='sh' S_DEBUG=\"!\" d \"test\"" {
+    DEBUG=true EXPORT_FORMAT='sh' S_DEBUG="!" run d "test"
+    assert_success
+    assert_output "${C_DEBUG@E}!${NC@E} ${C_DEBUG_TEXT@E}test${NC@E}"
+}
+
+@test "DEBUG=true EXPORT_FORMAT='md' S_DEBUG=\"!\" d \"test\"" {
+    DEBUG=true EXPORT_FORMAT='md' S_DEBUG="!" run d "test"
     assert_success
     assert_output "${C_DEBUG@E}!${NC@E} ${C_DEBUG_TEXT@E}test${NC@E}"
 }

@@ -38,11 +38,14 @@ CLI OPTIONS
 
 .. _show-cli-options-export:
 
-**--export** / **--export sh** / **--export md**
+**--export**
+:   Deprecated
+
+
+**--export sh** / **--export md**
 :   Export demo to stdout in shell script format.
 
-    See :ref:`EXPORT <show-environment-variables-runtime-export>` and
-    :ref:`EXPORT_FORMAT <show-environment-variables-runtime-export-format>` for more information.
+    See :ref:`EXPORT_FORMAT <show-environment-variables-runtime-export-format>` for more information.
 
 .. _show-cli-options-offline:
 
@@ -139,7 +142,7 @@ HEADERS
 **h1** *<header_title>*
 :   Print a single header 1 and clear output
 
-    *QUIET=true* will not print the header and *EXPORT=true* will print the header in shell script format by default.
+    *QUIET=true* will not print the header.
     The same applies to other header functions.
 
     Example 1:
@@ -359,14 +362,14 @@ DEBUG
 **d** *<text>*
 :   Print debug text. If text is longer than 80 characters, it will be wrapped. Printed if *DEBUG=true* only.
 
-    Not silenced by *QUIET=true*, can't be exported with *EXPORT=true*
+    Not silenced by *QUIET=true*, can't be exported with *EXPORT_FORMAT*
 
 .. _show-functions-debug-ed:
 
 **ed** *<command>*
 :   Print and execute a debug command. Execuded if *DEBUG=true* only.
 
-    Not silenced by *QUIET=true*, can't be exported with *EXPORT=true*
+    Not silenced by *QUIET=true*, can't be exported with *EXPORT_FORMAT*
 
 .. _show-functions-wait:
 
@@ -500,7 +503,7 @@ but to run your code by invoking the :ref:`run <show-cli-options>` command.
 
 .. _show-environment-variables-runtime-export:
 
-**EXPORT**
+**EXPORT [DEPRECATED]**
 :   If *true*, exports demo in script format instead of running
 
     Cannot be used with *DRYRUN=true*
@@ -515,7 +518,7 @@ but to run your code by invoking the :ref:`run <show-cli-options>` command.
     * **sh**: exports demo in shell script format
     * **md**: exports demo in markdown format
 
-    Set *EXPORT=true*, *QUIET=true* and *GOON=true*
+    Set *QUIET=true* and *GOON=true*
 
 .. _show-environment-variables-runtime-quiet:
 

@@ -20,7 +20,7 @@ ${C_ERROR@E}${S_ERROR} test error${NC@E}"
 ${C_ERROR@E}${S_ERROR} test error${NC@E}"
 }
 
-@test "EXPORT=true _print_error" {
+@test "EXPORT_FORMAT='sh' _print_error" {
     EXPORT_FORMAT='sh' run _print_error 'test error'
     assert_success
     assert_output "# ERR: test error"

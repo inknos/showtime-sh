@@ -88,6 +88,10 @@ _debug_info() {
 }
 
 _check_env() {
+    if [[ "$EXPORT" = "true" ]]; then
+        _print_warning "EXPORT is deprecated, use EXPORT_FORMAT instead"
+    fi
+
     if [[ -n "$EXPORT_FORMAT" ]]; then
         # EXPORT_FORMAT must be 'sh' or 'md'
         if [[ "$EXPORT_FORMAT" != "sh" ]] && [[ "$EXPORT_FORMAT" != "md" ]]; then
@@ -287,7 +291,7 @@ _print_command() {
     # Examples:
     # _print_command "echo 'This is a command'"
     # $ echo 'This is a command'
-    # EXPORT=true _print_command "echo 'This is a command'"
+    # EXPORT_FORMAT='sh' _print_command "echo 'This is a command'"
     # # echo 'This is a command'
     # QUIET=true _print_command "echo 'This is a command'"
     # DRYRUN=true _print_command "echo 'This is a command'"

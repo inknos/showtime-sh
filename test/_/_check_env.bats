@@ -38,6 +38,13 @@ setup() {
     assert_success
 }
 
+@test "EXPORT=true _check_env" {
+    EXPORT=true run _check_env
+    assert_success
+    assert_output "
+${C_WARNING@E}${S_WARNING} EXPORT is deprecated, use EXPORT_FORMAT instead${NC@E}"
+}
+
 @test "EXPORT_FORMAT=invalid _check_env" {
     EXPORT_FORMAT=invalid run _check_env
     assert_failure
