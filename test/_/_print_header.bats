@@ -9,25 +9,25 @@ setup() {
 @test "_print_header" {
     run _print_header "1" "Test Header"
     assert_success
-    assert_output "${C_HEADER@E}========================================${NC@E}
+    assert_output "${C_HEADER@E}$(printf '=%.0s' {1..78})${NC@E}
 ${C_HEADER_TEXT@E}Test Header${NC@E}
-${C_HEADER@E}========================================${NC@E}"
+${C_HEADER@E}$(printf '=%.0s' {1..78})${NC@E}"
 }
 
 @test "DRYRUN=true _print_header" {
     DRYRUN=true run _print_header "1" "Test Header"
     assert_success
-    assert_output "${C_HEADER@E}========================================${NC@E}
+    assert_output "${C_HEADER@E}$(printf '=%.0s' {1..78})${NC@E}
 ${C_HEADER_TEXT@E}Test Header${NC@E}
-${C_HEADER@E}========================================${NC@E}"
+${C_HEADER@E}$(printf '=%.0s' {1..78})${NC@E}"
 }
 
 @test "EXPORT_FORMAT='sh' _print_header" {
     EXPORT_FORMAT='sh' run _print_header "1" "Test Header"
     assert_success
-    assert_output "# ========================================
+    assert_output "# $(printf '=%.0s' {1..78})
 #  Test Header
-# ========================================"
+# $(printf '=%.0s' {1..78})"
 }
 
 @test "QUIET=true _print_header" {

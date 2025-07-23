@@ -52,6 +52,8 @@ _reverse='\033[7m'
 # No Color
 NC='\033[0m'
 
+LINE_LENGTH=${LINE_LENGTH:-78}
+
 # Semantic color definitions (configurable)
 C_HEADER=${C_HEADER:-$_fg_cyan}
 C_HEADER_TEXT=${C_HEADER_TEXT:-$_fg_white$_bold}
@@ -94,6 +96,12 @@ _trim() {
     # remove trailing whitespace characters
     var="${var%"${var##*[![:space:]]}"}"
     printf '%s' "$var"
+}
+
+_sequence() {
+    for ((i = 0; i < LINE_LENGTH; i++)); do
+        printf '='
+    done
 }
 
 _check_env() {
@@ -195,9 +203,11 @@ _print_header() {
     else
         # the first argument is the header level and it's internal only
         shift
-        echo -e "${C_HEADER}========================================${NC}"
-        echo -e "${C_HEADER_TEXT}$*${NC}"
-        echo -e "${C_HEADER}========================================${NC}\n"
+        echo -e "${C_HEADER}$(_sequence)${NC}"
+        echo "$*" | fold -s -w "$LINE_LENGTH" | while IFS= read -r line; do
+            echo -e "${C_HEADER_TEXT}$( _trim "$line" )${NC}"
+        done
+        echo -e "${C_HEADER}$(_sequence)${NC}\n"
     fi
 }
 
@@ -350,7 +360,7 @@ _export_md_comment() {
     # Example:
     # _export_md_comment "This is a comment"
     # # This is a comment
-    echo "$*" | fold -s -w 78
+    echo "$*" | fold -s -w "$LINE_LENGTH"
 }
 
 _export_md_command() {
@@ -389,7 +399,7 @@ _export_sh_comment() {
     # Example:
     # _export_sh_comment "This is a comment"
     # # This is a comment
-    echo "$*" | fold -s -w 78 | while IFS= read -r line; do
+    echo "$*" | fold -s -w "$LINE_LENGTH" | while IFS= read -r line; do
         echo "# $(_trim "$line")"
     done
 }
@@ -413,9 +423,9 @@ _export_sh_header() {
     # #  This is a header
     # # ========================================"
     shift
-    echo "# ========================================"
+    echo "# $(_sequence)"
     echo "#  $1"
-    echo "# ========================================"
+    echo "# $(_sequence)"
     echo
 }
 
@@ -495,7 +505,7 @@ d() {
 # Function to print step messages
 p() {
     local first_line=true
-    echo "$1" | fold -s -w 78 | while IFS= read -r line; do
+    echo "$1" | fold -s -w "$LINE_LENGTH" | while IFS= read -r line; do
         if [[ "$first_line" = true ]]; then
             _print_first_line "$(_trim "$line")"
             first_line=false
