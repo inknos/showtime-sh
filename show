@@ -626,9 +626,9 @@ et() {
     fi
     local exit_code=$?
     _print_newline
-    if (( exit_code == 124 )); then
-        pw "Command timed out after ${timeout_duration} seconds"
-    fi
+    # if (( exit_code == 124 )); then
+    #     pw "Command timed out after ${timeout_duration} seconds"
+    # fi
 }
 
 ed() {
