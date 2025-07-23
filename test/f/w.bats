@@ -9,8 +9,7 @@ setup() {
 }
 
 @test "w with timeout" {
-    bats_require_minimum_version 1.5.0
-    run -142 w 0.1
+    run w 0.1
     assert_failure
     assert_output "${C_PROMPT@E}Press Enter to continue...${NC@E}"
 }
