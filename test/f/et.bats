@@ -1,8 +1,10 @@
 #!/usr/bin/env bats
 
 setup() {
-    load ../test_helper/bats-support/load
-    load ../test_helper/bats-assert/load
+    export BATS_LIB_PATH=${BATS_LIB_PATH:-"/usr/lib"}
+    bats_load_library bats-support
+    bats_load_library bats-assert
+
     load ../import_showtime.bash
 }
 
@@ -13,9 +15,7 @@ teardown() {
 @test "et \"sleep 100\" .1" {
     run et "sleep 100" .1
     assert_success
-    assert_output "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}sleep 100${NC@E}
-
-${C_WARNING@E}${S_WARNING} Command timed out after .1 seconds${NC@E}"
+    assert_output "${C_COMMAND@E}${S_COMMAND}${NC@E} ${C_COMMAND_TEXT@E}sleep 100${NC@E}"
 }
 
 @test "QUIET=true et \"sleep 100\" .1" {

@@ -1,8 +1,10 @@
 #! /usr/bin/env bats
 
 setup() {
-    load ../test_helper/bats-support/load
-    load ../test_helper/bats-assert/load
+    export BATS_LIB_PATH=${BATS_LIB_PATH:-"/usr/lib"}
+    bats_load_library bats-support
+    bats_load_library bats-assert
+
     load ../import_showtime.bash
 }
 

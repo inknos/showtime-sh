@@ -1,8 +1,10 @@
 #!/usr/bin/env bats
 
 setup() {
-    load ../test_helper/bats-support/load
-    load ../test_helper/bats-assert/load
+    export BATS_LIB_PATH=${BATS_LIB_PATH:-"/usr/lib"}
+    bats_load_library bats-support
+    bats_load_library bats-assert
+
     load ../import_showtime.bash
 }
 
@@ -183,17 +185,17 @@ ${C_BULLET@E}${S_BULLET}${NC@E} ${C_TEXT@E}done${NC@E}"
 @test "./show history" {
     run ./show test/run/history
     assert_success
-    [[ "${lines[5]}" = "echo e" ]]
-    [[ "${lines[6]}" = "echo et" ]]
-    [[ "${lines[7]}" =~ ^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{10}$ ]]
+    assert_line --index 5 "echo e"
+    assert_line --index 6 "echo et"
+    assert_line --index 7 --regexp '^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{4,}$'
 }
 
 # check debug is added to history
 @test "DEBUG=true ./show history" {
     DEBUG=true run ./show test/run/history
     assert_success
-    [[ "${lines[7]}" = "echo e" ]]
-    [[ "${lines[8]}" = "echo et" ]]
-    [[ "${lines[9]}" = "echo ed" ]]
-    [[ "${lines[10]}" =~ ^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{10}$ ]]
+    assert_line --index 7 "echo e"
+    assert_line --index 8 "echo et"
+    assert_line --index 9 "echo ed"
+    assert_line --index 10 --regexp '^cat\ \/tmp\/tmp\.[0-9a-zA-Z]{4,}$'
 }

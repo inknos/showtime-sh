@@ -1,8 +1,13 @@
 #! /usr/bin/env bats
 
-load ../test_helper/bats-support/load
-load ../test_helper/bats-assert/load
-load ../import_showtime.bash
+setup() {
+    export BATS_LIB_PATH=${BATS_LIB_PATH:-"/usr/lib"}
+    bats_load_library bats-support
+    bats_load_library bats-assert
+
+    load ../import_showtime.bash
+}
+
 
 @test "_export_md_header 1" {
     run _export_md_header 1 "This is a header"
